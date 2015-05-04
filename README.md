@@ -34,7 +34,7 @@ double testMultiplyFunction(const int16_t w, const int32_t x,const long y, const
 
 You can define JavaScript prototype like this:
 ``` bash
-var bridjs = require('../lib/bridjs.js'), Sig = bridjs.Signature;
+var bridjs = require('bridjs'), Sig = bridjs.Signature;
 
 var NativeModule = bridjs.defineModule({
     testMultiplyFunction:  bridjs.defineFunction(Sig.double, Sig.int16, Sig.int32,
@@ -48,8 +48,8 @@ var result = nativeModule.testMultiplyFunction(2,2,2,2,2.5);
 Bind C function API
 ``` bash
 bridjs.defineModule({
-  functionName1: bridjsDefineFunction(returnType, arg0Type, arg2Type...),
-  functionName2: bridjsDefineFunction(returnType, arg0Type, arg2Type...),
+  functionName1: bridjs.DefineFunction(returnType, arg0Type, arg2Type...),
+  functionName2: bridjs.DefineFunction(returnType, arg0Type, arg2Type...),
   ...
 },libraryFile);
 ``` 
