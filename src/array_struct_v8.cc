@@ -142,7 +142,7 @@ const size_t bridjs::ArrayStruct::deriveArrayLayout(const size_t alignment) {
         throw std::runtime_error(message.str());
     }
 
-    alignmentInfo = std::max(alignmentInfo, fieldAlignment);
+    alignmentInfo = (std::max)(alignmentInfo, fieldAlignment);
 
     if ((calculatedSize % fieldAlignment) != 0) {
         calculatedSize += fieldAlignment - (calculatedSize % fieldAlignment);
