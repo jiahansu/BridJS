@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
-
+#include <uv.h>
 #include "dyncall_v8_utils.h"
 
 #include <node.h>
@@ -51,7 +51,7 @@ namespace bridjs {
         static void test();
         static void asyncTestCallback(uv_work_t *req);
         static void afterCallAsync(uv_work_t *req);
-        static Handle<v8::Value> TestMultiplyFunction(const v8::Arguments& args);
+        static void TestMultiplyFunction(const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 }
 
@@ -119,7 +119,7 @@ extern "C" {
 
     UV_EXTERN double testMultiplyFunction(const int16_t w, const int32_t x, const long y, const DClonglong z, const double e);
     UV_EXTERN double testStructFunction(const TestStruct* pTestStruct);
-	UV_EXTERN const char* testStringFunction(const char* pTestStruct);
+    UV_EXTERN const char* testStringFunction(const char* pTestStruct);
     UV_EXTERN void testCallbackFunction(MultiplyCallbackFunction callbackFunction);
     UV_EXTERN void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction);
     UV_EXTERN double testStructValueFunction(const TestStruct testStruct);

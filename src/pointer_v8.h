@@ -33,19 +33,20 @@
 #pragma once
 
 #include <node.h>
+#include <node_object_wrap.h>
 
 namespace bridjs{
 class Pointer :public node::ObjectWrap{
 public:
 	static void Init(v8::Handle<v8::Object> exports);
-	static v8::Handle<v8::Value> New(const v8::Arguments& args);
-	static v8::Handle<v8::Value> NewInstance(const void* ptr);
+	static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static v8::Local<v8::Object> NewInstance(v8::Isolate* isolate,const void* ptr);
 	static Pointer* New(const void* ptr);
-	static v8::Handle<v8::Value> GetAddress(const v8::Arguments& args);
-	static v8::Handle<v8::Value> IsNull(const v8::Arguments& args);
-	static const void* Data(v8::Handle<v8::Object> val);
-	static v8::Handle<v8::Value> Slice(const v8::Arguments& args);
-	static v8::Handle<v8::Value> ToString(const v8::Arguments& args);
+	static void GetAddress(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void IsNull(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static const void* Data(v8::Isolate* isolate, v8::Handle<v8::Object> val);
+	static void Slice(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void ToString(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 	virtual void* getAddress();
 	virtual ~Pointer();

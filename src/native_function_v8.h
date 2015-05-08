@@ -33,6 +33,8 @@
 #pragma once
 
 #include <node.h>
+#include <node_object_wrap.h>
+#include <v8-util.h>
 #include <vector>
 #include <memory>
 #include <exception>
@@ -45,8 +47,11 @@ extern "C" {
 namespace bridjs {
 
     class ValueCollection {
+    protected:
+        v8::Isolate* mpIsolate;
     public:
-
+        ValueCollection(v8::Isolate* pIsolate):mpIsolate(pIsolate){};
+        
         virtual v8::Local<v8::Value> get(const uint32_t i) const {
             throw std::runtime_error("Not implement");
         };
@@ -61,9 +66,9 @@ namespace bridjs {
 
     class ArgumentCollection : public ValueCollection {
     private:
-        const v8::Arguments* mpArgs;
+        const v8::FunctionCallbackInfo<v8::Value>* mpArgs;
     public:
-        ArgumentCollection(const v8::Arguments* pArg);
+        ArgumentCollection(v8::Isolate* pIsolate,const v8::FunctionCallbackInfo<v8::Value>* pArg);
         v8::Local<v8::Value> get(const uint32_t i) const;
         uint32_t length() const;
         ~ArgumentCollection();
@@ -73,7 +78,7 @@ namespace bridjs {
     private:
         const v8::Handle<v8::Array> mArray;
     public:
-        ArrayCollection(const v8::Handle<v8::Array> arr);
+        ArrayCollection(v8::Isolate* pIsolate,const v8::Handle<v8::Array> arr);
         v8::Local<v8::Value> get(const uint32_t i) const;
         uint32_t length() const;
         ~ArrayCollection();
@@ -82,8 +87,9 @@ namespace bridjs {
     class ObjectCollection : public ValueCollection {
     private:
         const v8::Handle<v8::Object> mObject;
+        
     public:
-        ObjectCollection(const v8::Handle<v8::Object> arr);
+        ObjectCollection(v8::Isolate* pIsolate,const v8::Handle<v8::Object> arr);
         v8::Local<v8::Value> get(const uint32_t i) const;
         uint32_t length() const;
         ~ObjectCollection();
@@ -92,17 +98,17 @@ namespace bridjs {
     class NativeFunction : public node::ObjectWrap {
     public:
         static void Init(v8::Handle<v8::Object> exports);
-        static v8::Handle<v8::Value> New(const v8::Arguments& args);
+        static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         //static v8::Handle<v8::Value> NewInstance(const void* ptr);
-        static v8::Handle<v8::Value> GetReturnType(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetArgumentType(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetArgumentsLength(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetVM(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetSymbol(const v8::Arguments& args);
-        static v8::Handle<v8::Value> Call(const v8::Arguments& args);
-        static v8::Handle<v8::Value> CallAsync(const v8::Arguments& args);
+        static void GetReturnType(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetArgumentType(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetArgumentsLength(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetVM(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetSymbol(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void Call(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void CallAsync(const v8::FunctionCallbackInfo<v8::Value>& args);
 
-        static const bridjs::NativeFunction* Data(v8::Handle<v8::Value> val);
+        static const bridjs::NativeFunction* Data(v8::Isolate *pIsolate,v8::Handle<v8::Value> val);
         static NativeFunction* New(void *pSymbol, const char returnType,
                 const std::vector<char> &argumentType);
 
@@ -127,12 +133,19 @@ namespace bridjs {
 
     class AsyncCallTask {
     private:
+        v8::Isolate *mpIsolate;
         DCCallVM* mpVM;
         const NativeFunction* mpNativeFunction;
+        std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> mpPersistArgs;
+        std::shared_ptr<std::vector<std::shared_ptr<std::string>>> mpStringArgs;
         v8::Persistent<v8::Object> mpCallbackObject;
         std::shared_ptr<void> mpData;
     public:
-        AsyncCallTask(DCCallVM* mpVM, const NativeFunction* mpNativeFunction, v8::Persistent<v8::Object> pCallbackObject);
+        AsyncCallTask(v8::Isolate *pIsolate, DCCallVM* mpVM, 
+                const NativeFunction* mpNativeFunction,
+                std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> pPersistArgs, 
+                std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs,
+                v8::Persistent<v8::Object>& pCallbackObject);
         void execute();
         void done();
         v8::Handle<v8::Value> getReturnValue();

@@ -32,13 +32,13 @@
  */
 #include "array_struct_v8.h"
 #include "dyncall_v8_utils.h"
+#include <v8.h>
 #include <iostream>
 #include <algorithm>
 
 extern "C" {
 #include "dyncall.h"
 #include "dyncall_signature.h"
-#include <uv.h>
 }
 
 using namespace bridjs;
@@ -50,69 +50,78 @@ std::vector<char> bridjs::ArrayStruct::mEmptyTypes;
 std::map<uint32_t,v8::Local<v8::Object>> bridjs::ArrayStruct::mEmptySubStructMap;
 
 void bridjs::ArrayStruct::Init(v8::Handle<v8::Object> exports) {
+    Isolate* isolate = Isolate::GetCurrent();
     // Prepare constructor template
-    Local<FunctionTemplate> tpl = FunctionTemplate::New(bridjs::ArrayStruct::New);
+    Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate,bridjs::ArrayStruct::New);
 
 
-    tpl->SetClassName(String::NewSymbol("ArrayStruct"));
+    tpl->SetClassName(v8::String::NewFromUtf8(isolate,"ArrayStruct"));
     tpl->InstanceTemplate()->SetInternalFieldCount(8);
 
     // Prototype
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("getFieldType"),
-            FunctionTemplate::New(bridjs::Struct::GetFieldType)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("getFieldCount"),
-            FunctionTemplate::New(bridjs::Struct::GetFieldCount)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("getFieldOffset"),
-            FunctionTemplate::New(bridjs::Struct::GetFieldOffset)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("getField"),
-            FunctionTemplate::New(bridjs::Struct::GetField)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("setField"),
-            FunctionTemplate::New(bridjs::Struct::SetField)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("getSize"),
-            FunctionTemplate::New(bridjs::Struct::GetSize)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("getSignature"),
-            FunctionTemplate::New(bridjs::Struct::GetSignature)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(String::NewSymbol("toString"),
-            FunctionTemplate::New(bridjs::Struct::ToString)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldType", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::GetFieldType)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldCount", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::GetFieldCount)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldOffset", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::GetFieldOffset)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getField", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::GetField)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"setField", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::SetField)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getSize", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::GetSize)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getSignature", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::GetSignature)->GetFunction(), ReadOnly);
+    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"toString", v8::String::kInternalizedString),
+            FunctionTemplate::New(isolate,bridjs::Struct::ToString)->GetFunction(), ReadOnly);
 
-    constructor = Persistent<Function>::New(tpl->GetFunction());
+    constructor.Reset(isolate,tpl->GetFunction());
 
-    exports->Set(String::NewSymbol("ArrayStruct"), constructor);
+    exports->Set(v8::String::NewFromUtf8(isolate,"ArrayStruct"), tpl->GetFunction());
     
     bridjs::ArrayStruct::mEmptyTypes = std::vector<char>();
     bridjs::ArrayStruct::mEmptySubStructMap = std::map<uint32_t,v8::Local<v8::Object>>();
 }
 
-bridjs::ArrayStruct* bridjs::ArrayStruct::New(const char type, const size_t length, const size_t alignment) {
-    return new bridjs::ArrayStruct(type, length, alignment);
+bridjs::ArrayStruct* bridjs::ArrayStruct::New(v8::Isolate* isolate,const char type, const size_t length, const size_t alignment) {
+    return new bridjs::ArrayStruct(isolate, type, length, alignment);
 }
 
-v8::Handle<v8::Value> bridjs::ArrayStruct::New(const v8::Arguments& args) {
-    HandleScope scope;
+void bridjs::ArrayStruct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent();
+    HandleScope scope(isolate);
 
     if (args.IsConstructCall()) {
         try {
             GET_CHAR_ARG(type, args, 0);
             GET_INT64_ARG(length, args, 1);
             size_t alignment = DEFAULT_ALIGNMENT;
-            ArrayStruct *obj = new ArrayStruct(type, static_cast<size_t> (length), alignment);
+            ArrayStruct *obj = new ArrayStruct(isolate, type, static_cast<size_t> (length), alignment);
 
             obj->Wrap(args.This());
 
-            return args.This();
+            args.GetReturnValue().Set(args.This());
+            
+            return;
         } catch (std::exception &e) {
-            return v8::Exception::TypeError(v8::String::New(e.what()));
+           THROW_EXCEPTION(e.what());
         }
     } else {
         const int argc = 1;
         Local<Value> argv[argc] = {args[0]};
-        return scope.Close(constructor->NewInstance(argc, argv));
+        Local<Function> cons = Local<Function>::New(isolate, constructor);
+        
+        args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        
+        return;
     }
 }
 
-bridjs::ArrayStruct::ArrayStruct(const char type, const size_t length,
-								 const size_t alignment) : mType(type), mLength(length), 
-								 bridjs::Struct(bridjs::ArrayStruct::mEmptyTypes, bridjs::ArrayStruct::mEmptySubStructMap, alignment) {
+bridjs::ArrayStruct::ArrayStruct(v8::Isolate* pIsolate, const char type, const size_t length,
+								 const size_t alignment) :
+								 bridjs::Struct(pIsolate, bridjs::ArrayStruct::mEmptyTypes, 
+        bridjs::ArrayStruct::mEmptySubStructMap, alignment),mType(type), mLength(length) {
 
     this->mSize = this->deriveArrayLayout(alignment);
 }

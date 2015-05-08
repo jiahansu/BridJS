@@ -43,7 +43,7 @@ using namespace bridjs;
 
 std::map<DCCallback*, CallbackWrapper*> gValueWrapperMap;
 uv_mutex_t gValueWrapperMutex;
-unsigned long gDefaultThread;
+uv_thread_t gDefaultThread;
 
 uv_mutex_t gCallbackTaskQueueMutex;
 uv_async_t gCallbackQueueAsync;
@@ -51,25 +51,25 @@ std::vector<std::shared_ptr<bridjs::CallbackTask >> gCallbackTaskQueue;
 
 char callbackHandler(DCCallback* cb, DCArgs* args, DCValue* result, void* userdata);
 
-v8::Handle<v8::Value> NewCallback(const v8::Arguments& args);
-v8::Handle<v8::Value> InitCallback(const v8::Arguments& args);
-v8::Handle<v8::Value> FreeCallback(const v8::Arguments& args);
+void NewCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
+void InitCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
+void FreeCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 
-v8::Handle<v8::Value> ArgBool(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgChar(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgShort(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgInt(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgLong(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgLongLong(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgUChar(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgUShort(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgUInt(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgULong(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgULongLong(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgFloat(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgDouble(const v8::Arguments& args);
-v8::Handle<v8::Value> ArgPointer(const v8::Arguments& args);
+void ArgBool(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgChar(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgShort(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgInt(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgLong(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgLongLong(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgUChar(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgUShort(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgUInt(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgULong(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgULongLong(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgFloat(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgDouble(const v8::FunctionCallbackInfo<v8::Value>& args);
+void ArgPointer(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 void bridjs::Dyncallback::Init(v8::Handle<v8::Object> exports) {
     int32_t error;
@@ -119,8 +119,9 @@ void bridjs::Dyncallback::Init(v8::Handle<v8::Object> exports) {
     NODE_SET_METHOD(exports, "argPointer", ArgPointer);
 }
 
-v8::Handle<v8::Value> NewCallback(const v8::Arguments& args) {
-    HandleScope scope;
+void  NewCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); 
+    HandleScope scope(isolate);
     std::stringstream signature;
     std::vector<char> argumentTypes;
     GET_CHAR_ARG(returnType, args, 0);
@@ -128,7 +129,8 @@ v8::Handle<v8::Value> NewCallback(const v8::Arguments& args) {
     GET_OBJECT_ARG(callbackObj, args, 2);
     CallbackWrapper* valueWrapper;
     DCCallback* pCallback;
-
+    v8::Persistent<v8::Object> persistentObject(isolate,callbackObj);
+            
     for (uint32_t i = 0; i < argumentArray->Length(); ++i) {
         GET_CHAR_VALUE(type, argumentArray->Get(i), i);
         argumentTypes.push_back(type);
@@ -136,30 +138,32 @@ v8::Handle<v8::Value> NewCallback(const v8::Arguments& args) {
     }
     signature << ')' << returnType;
 
-    valueWrapper = new CallbackWrapper(returnType, argumentTypes, v8::Persistent<Object>::New(callbackObj)); //GET_POINTER_ARG(void,pUserData,args,2);
+    valueWrapper = new CallbackWrapper(isolate, returnType, argumentTypes, 
+            persistentObject); //GET_POINTER_ARG(void,pUserData,args,2);
     pCallback = dcbNewCallback(signature.str().c_str(), callbackHandler, valueWrapper);
 
     if (pCallback != NULL) {
         uv_mutex_lock(&gValueWrapperMutex);
         gValueWrapperMap[pCallback] = valueWrapper;
         uv_mutex_unlock(&gValueWrapperMutex);
-        return scope.Close(bridjs::Utils::wrapPointer(pCallback));
+        args.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,pCallback));
     } else {
         delete valueWrapper;
         valueWrapper = NULL;
-        return THROW_EXCEPTION("Fail to new Callback object");
+        THROW_EXCEPTION("Fail to new Callback object");
     }
 }
 
-v8::Handle<v8::Value> InitCallback(const v8::Arguments& args) {
-    HandleScope scope;
+void  InitCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     std::stringstream signature;
     std::vector<char> argumentTypes;
     GET_POINTER_ARG(DCCallback, pCallback, args, 0);
     GET_ARRAY_ARG(argumentArray, args, 1);
     GET_CHAR_ARG(returnType, args, 2);
     GET_OBJECT_ARG(callbackObj, args, 3);
-
+    v8::Persistent<Object> persistentCallbackObj(isolate,callbackObj);
+    
     for (uint32_t i = 0; i < argumentArray->Length(); ++i) {
         GET_CHAR_VALUE(type, argumentArray->Get(i), i);
         argumentTypes.push_back(type);
@@ -168,7 +172,8 @@ v8::Handle<v8::Value> InitCallback(const v8::Arguments& args) {
     signature << ')' << returnType;
 
     if (pCallback != NULL) {
-        CallbackWrapper* valueWrapper = new CallbackWrapper(returnType, argumentTypes, v8::Persistent<Object>::New(callbackObj));
+        CallbackWrapper* valueWrapper = new CallbackWrapper(isolate, returnType, 
+                argumentTypes, persistentCallbackObj);
 
         dcbInitCallback(pCallback, signature.str().c_str(), callbackHandler, valueWrapper);
 
@@ -176,14 +181,14 @@ v8::Handle<v8::Value> InitCallback(const v8::Arguments& args) {
         gValueWrapperMap[pCallback] = valueWrapper;
         uv_mutex_unlock(&gValueWrapperMutex);
 
-        return scope.Close(v8::Undefined());
+        args.GetReturnValue().Set(v8::Undefined(isolate));
     } else {
-        return THROW_EXCEPTION("pCallback was NULL");
+        THROW_EXCEPTION("pCallback was NULL");
     }
 }
 
-v8::Handle<v8::Value> FreeCallback(const v8::Arguments& args) {
-    HandleScope scope;
+void  FreeCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCCallback, pCallback, args, 0);
 
     if (pCallback != NULL) {
@@ -202,114 +207,114 @@ v8::Handle<v8::Value> FreeCallback(const v8::Arguments& args) {
         uv_mutex_unlock(&gValueWrapperMutex);
 
         dcbFreeCallback(pCallback);
-        return scope.Close(v8::Undefined());
+        args.GetReturnValue().Set(v8::Undefined(isolate));
     } else {
-        return THROW_EXCEPTION("pCallback was NULL");
+        THROW_EXCEPTION("pCallback was NULL");
     }
 }
 
-v8::Handle<v8::Value> ArgBool(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgBool(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_BOOL(dcbArgBool(pArgs)));
+    args.GetReturnValue().Set(WRAP_BOOL(dcbArgBool(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgChar(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgChar(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(bridjs::Utils::toV8String(dcbArgChar(pArgs)));
+    args.GetReturnValue().Set(bridjs::Utils::toV8String(isolate,dcbArgChar(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgShort(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgShort(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_SHORT(dcbArgShort(pArgs)));
+    args.GetReturnValue().Set(WRAP_SHORT(dcbArgShort(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgInt(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgInt(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_INT(dcbArgInt(pArgs)));
+    args.GetReturnValue().Set(WRAP_INT(dcbArgInt(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgLong(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgLong(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_LONG(dcbArgLong(pArgs)));
+    args.GetReturnValue().Set(WRAP_LONG(dcbArgLong(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgLongLong(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgLongLong(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_LONGLONG(dcbArgLongLong(pArgs)));
+    args.GetReturnValue().Set(WRAP_LONGLONG(dcbArgLongLong(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgUChar(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgUChar(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(bridjs::Utils::toV8String(dcbArgUChar(pArgs)));
+    args.GetReturnValue().Set(bridjs::Utils::toV8String(isolate,dcbArgUChar(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgUShort(const v8::Arguments& args) {
-    HandleScope scope;
+void  ArgUShort(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_USHORT(dcbArgUShort(pArgs)));
+    args.GetReturnValue().Set(WRAP_USHORT(dcbArgUShort(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgUInt(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgUInt(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_UINT(dcbArgUInt(pArgs)));
+    args.GetReturnValue().Set(WRAP_UINT(dcbArgUInt(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgULong(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgULong(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_ULONG(dcbArgULong(pArgs)));
+    args.GetReturnValue().Set(WRAP_ULONG(dcbArgULong(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgULongLong(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgULongLong(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_ULONGLONG(dcbArgULongLong(pArgs)));
+    args.GetReturnValue().Set(WRAP_ULONGLONG(dcbArgULongLong(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgFloat(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgFloat(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_FLOAT(dcbArgFloat(pArgs)));
+    args.GetReturnValue().Set(WRAP_FLOAT(dcbArgFloat(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgDouble(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgDouble(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_DOUBLE(dcbArgDouble(pArgs)));
+    args.GetReturnValue().Set(WRAP_DOUBLE(dcbArgDouble(pArgs)));
 }
 
-v8::Handle<v8::Value> ArgPointer(const v8::Arguments& args) {
-    HandleScope scope;
+void ArgPointer(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCArgs, pArgs, args, 0);
 
-    return scope.Close(WRAP_POINTER(dcbArgPointer(pArgs)));
+    args.GetReturnValue().Set(WRAP_POINTER(dcbArgPointer(pArgs)));
 }
 
-std::shared_ptr<v8::Handle<Value >> pullArgs(DCCallback* cb, DCArgs* args, CallbackWrapper* pCallbackWrapper) {
-    //HandleScope scope;
+std::shared_ptr<v8::Local<Value >> pullArgs(Isolate* isolate, DCCallback* cb, DCArgs* args, CallbackWrapper* pCallbackWrapper) {
+    //Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     const size_t length = pCallbackWrapper->getArgumentLength();
-    std::shared_ptr < v8::Handle < Value >> argv(new v8::Handle<Value>[length], ArrayDeleter < v8::Handle < Value >> ());
+    std::shared_ptr < v8::Local < Value >> argv(new v8::Local<Value>[length], ArrayDeleter < v8::Local < Value >> ());
 
     for (uint32_t i = 0; i < length; ++i) {
 
@@ -402,9 +407,9 @@ std::shared_ptr<v8::Handle<Value >> pullArgs(DCCallback* cb, DCArgs* args, Callb
     return argv;
 }
 
-v8::Handle<Value> setReturnValue(DCValue* value, Local<Value> returnValue, CallbackWrapper* pCallbackWrapper) {
+void setReturnValue(Isolate* isolate,DCValue* value, Local<Value> returnValue, CallbackWrapper* pCallbackWrapper) {
     //DCCallVM *vm = nativeFunction->getVM();
-    HandleScope scope;
+    v8::EscapableHandleScope scope(isolate);
 
     switch (pCallbackWrapper->getReturnType()) {
         case DC_SIGCHAR_VOID:
@@ -514,10 +519,10 @@ v8::Handle<Value> setReturnValue(DCValue* value, Local<Value> returnValue, Callb
             std::stringstream message;
             message << "Unknown returnType: " << pCallbackWrapper->getReturnType() << std::endl;
             //throw std::runtime_error(message.str());
-            return v8::Exception::TypeError(v8::String::New(message.str().c_str()));
+            //return v8::Exception::TypeError(v8::String::New(message.str().c_str()));
     }
 
-    return scope.Close(v8::Null());
+    //return scope.Escape(v8::Null());
 }
 
 char callbackHandler(DCCallback* cb, DCArgs* args, DCValue* result, void* userdata) {
@@ -544,7 +549,7 @@ void invokeV8Callback(uv_async_t *handle, int status /*UNUSED*/) {
     }
 }
 
-void bridjs::CallbackTask::flushV8Callbacks(uv_async_t *handle, int status /*UNUSED*/) {
+void bridjs::CallbackTask::flushV8Callbacks(uv_async_t *handle) {
     std::shared_ptr<CallbackTask> pCallbackTask;
     std::vector < std::shared_ptr < CallbackTask >> ::iterator iterator;
     do {
@@ -581,8 +586,9 @@ void closeAsyncCallback(uv_handle_t *handle) {
     }
 }
 
-bridjs::CallbackWrapper::CallbackWrapper(const char returnType, const std::vector<char> &argumentTypes, v8::Persistent<v8::Object> pCallbackObject) :
-NativeFunction(NULL, returnType, argumentTypes), mpCallbackObject(pCallbackObject) {
+bridjs::CallbackWrapper::CallbackWrapper(v8::Isolate* isolate, const char returnType, 
+        const std::vector<char> &argumentTypes, v8::Persistent<v8::Object> &pCallbackObject) : 
+NativeFunction(NULL, returnType, argumentTypes),mpIsolate(isolate), mpCallbackObject(isolate,pCallbackObject) {
     int32_t error;
     memset(&mMutex, 0, sizeof (uv_mutex_t));
     error = uv_mutex_init(&mMutex);
@@ -618,7 +624,7 @@ const char bridjs::CallbackWrapper::onCallback(DCCallback* cb, DCArgs* args, DCV
         uv_mutex_unlock(&gCallbackTaskQueueMutex);
 
         if (uv_thread_self() == gDefaultThread) {
-            bridjs::CallbackTask::flushV8Callbacks(NULL, 0);
+            bridjs::CallbackTask::flushV8Callbacks(NULL);
             //invokeV8Callback(task->getAsync(),0);
         } else {
             //uv_queue_work(uv_default_loop(),req,NULL,(uv_after_work_cb)invokeV8Callback);
@@ -649,10 +655,13 @@ uv_mutex_t* CallbackWrapper::getMutex() {
     return &this->mMutex;
 }
 
+v8::Isolate* CallbackWrapper::getIsolate(){
+    return this->mpIsolate;
+}
+
 bridjs::CallbackWrapper::~CallbackWrapper() {
     uv_mutex_destroy(&mMutex);
-    this->mpCallbackObject.Dispose();
-    this->mpCallbackObject.Clear();
+    this->mpCallbackObject.Reset();
 }
 
 CallbackTask::CallbackTask(CallbackWrapper *pCallbackWrapper, DCCallback *pDCCallBack, DCArgs *pDCArgs, DCValue* pDCresult) : mpCallbackWrapper(pCallbackWrapper),
@@ -692,19 +701,22 @@ void CallbackTask::notify() {
 }
 
 void CallbackTask::done() {
-    HandleScope scope;
-    std::shared_ptr < v8::Handle < Value >> argv = pullArgs(this->mpDCCallBack, this->mpDCArgs, this->mpCallbackWrapper);
-    v8::Local<Value> onDoneValue = this->mpCallbackWrapper->mpCallbackObject->GetRealNamedProperty(v8::String::New("onDone"));
+    Isolate* isolate = this->mpCallbackWrapper->getIsolate(); 
+    v8::HandleScope scope(isolate);
+    
+    std::shared_ptr < v8::Local < Value >> argv = pullArgs(isolate,this->mpDCCallBack, this->mpDCArgs, this->mpCallbackWrapper);
+    v8::Local<v8::Object> callbackObject = v8::Local<v8::Object>::New(isolate, this->mpCallbackWrapper->mpCallbackObject); 
+    v8::Local<Value> onDoneValue = callbackObject->GetRealNamedProperty(v8::String::NewFromUtf8(isolate,"onDone"));
 
     if (onDoneValue->IsFunction()) {
         v8::Local<v8::Function> onDoneFunction = v8::Local<Function>::Cast(onDoneValue);
-        v8::Local<v8::Value> returnValue = onDoneFunction->Call(this->mpCallbackWrapper->mpCallbackObject,
+        v8::Local<v8::Value> returnValue = onDoneFunction->Call(callbackObject,
                 static_cast<int32_t> (this->mpCallbackWrapper->getArgumentLength()),
                 argv.get());
 
-        setReturnValue(this->mpDCresult, returnValue, this->mpCallbackWrapper);
+        setReturnValue(isolate,this->mpDCresult, returnValue, this->mpCallbackWrapper);
     } else {
-        std::cerr << "Illegal callback object: " << (*v8::String::Utf8Value(this->mpCallbackWrapper->mpCallbackObject->ToString())) << std::endl;
+        std::cerr << "Illegal callback object: " << (*v8::String::Utf8Value( callbackObject->ToString())) << std::endl;
     }
     //std::cout<<"43333333"<<std::endl;	
     this->notify();

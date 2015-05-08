@@ -31,10 +31,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
+#include <uv.h>
 #include "native_function_v8.h"
 
 extern "C" {
-#include "dyncall_callback.h"
+#include "dyncall_callback.h"  
 }
 namespace bridjs {
 
@@ -46,12 +47,16 @@ namespace bridjs {
     class CallbackWrapper : public bridjs::NativeFunction {
         friend class CallbackTask;
     private:
+        v8::Isolate* mpIsolate;
         v8::Persistent<v8::Object> mpCallbackObject;
         uv_mutex_t mMutex;
     public:
-        CallbackWrapper(const char returnType, const std::vector<char> &argumentTypes, v8::Persistent<v8::Object> pCallbackObject);
+        CallbackWrapper(v8::Isolate* isolate, const char returnType, 
+                const std::vector<char> &argumentTypes, 
+                v8::Persistent<v8::Object> &pCallbackObject);
         const char onCallback(DCCallback* cb, DCArgs* args, DCValue* result);
         uv_mutex_t* getMutex();
+        v8::Isolate* getIsolate();
         virtual ~CallbackWrapper();
     };
 
@@ -70,7 +75,7 @@ namespace bridjs {
         void done();
         //uv_async_t* getAsync();
 
-        static void flushV8Callbacks(uv_async_t *handle, int status /*UNUSED*/);
+        static void flushV8Callbacks(uv_async_t *handle);
 
         virtual ~CallbackTask();
     };

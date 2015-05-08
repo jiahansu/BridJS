@@ -1,6 +1,6 @@
 {
     "name": "bridjs",
-    "version": "0.1.8-1",
+    "version": "0.2.0-6",
     "description": "V8 bindings for dyncall, and BridJ-like API for nodejs.",
     "keywords": [
         "dyncall",
@@ -21,31 +21,32 @@
         "url": "https://github.com/jiahansu/BridJS/issues"
     },
     "engines": {
-        "node": ">=0.10.8"
+        "node": ">=0.12.2"
     },
     "scripts": {
-        "test": "vows"
+        "install": "node-gyp rebuild"
     },
     "directories": {
-        "win32_x64": "win32_x64",
-        "wind32_ia32": "win32_ia32",
-        "linux_x64": "linux_x64",
-        "linux_ia32": "linux_ia32",
+        "deps": "deps",
+        "src": "src",
         "sample": "sample",
         "test": "test",
         "lib": "lib"
     },
     "dependencies": {
         "myclass": ">=1.0.2",
-        "log4js": ">=0.6.9"
+        "log4js": ">=0.6.9",
+        "node-gyp": ">=1.0.3"
     },
     "devDependencies": {
         "myclass": ">=1.0.2",
-        "log4js": ">=0.6.9"
+        "log4js": ">=0.6.9",
+        "node-gyp": ">=1.0.3"
     },
     "browser": {
         "os": false
     },
+    "gypfile": true,
     "homepage": "https://github.com/jiahansu/BridJS/",
     "_id": "bridjs@0.1.7-3",
     "_from": "bridjs@>=0.1.7-3"

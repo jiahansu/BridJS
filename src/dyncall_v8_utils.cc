@@ -78,7 +78,7 @@ Handle<Value> bridjs::Utils::ptr2string(void* ptr) {
   return String::New(str);
 }
 */
-v8::Handle<v8::Value> WriteInt64(const v8::Arguments& args);
+void WriteInt64(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 size_t bridjs::Utils::getTypeSize(const char type){
 	size_t size;
@@ -164,24 +164,26 @@ size_t bridjs::Utils::getTypeSize(const char type){
 		return size;
 }
 
-v8::Handle<v8::Value> GetTypeSize(const v8::Arguments& args){
-	try{
-		HandleScope scope;
-		size_t size;
+void GetTypeSize(const v8::FunctionCallbackInfo<v8::Value>& args){
+    Isolate* isolate = Isolate::GetCurrent(); 
+    HandleScope scope(isolate);
+    
+    try {
+        size_t size;
 
-		GET_CHAR_ARG(type, args, 0);
+        GET_CHAR_ARG(type, args, 0);
 
-		size =  bridjs::Utils::getTypeSize(type);
+        size = bridjs::Utils::getTypeSize(type);
 
-		return scope.Close(WRAP_ULONGLONG(size));
-	}catch(std::exception &e){
-		return v8::Exception::TypeError(v8::String::New(e.what()));
-	}
+        args.GetReturnValue().Set(WRAP_ULONGLONG(size));
+    } catch (std::exception &e) {
+        THROW_EXCEPTION(e.what());
+    }
 
 }
 
-v8::Handle<v8::Value> WriteInt64(const v8::Arguments& args){
-	HandleScope scope;
+void WriteInt64(const v8::FunctionCallbackInfo<v8::Value>& args){
+	Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
 	GET_POINTER_ARG(const char, ptr,args,0);
 	GET_INT64_ARG(offset,args,1);
@@ -191,7 +193,7 @@ v8::Handle<v8::Value> WriteInt64(const v8::Arguments& args){
 
 	(*(int64_t*)ptr) = value;
 
-	return scope.Close(v8::Undefined());
+	args.GetReturnValue().Set(v8::Undefined(isolate));
 }
 
 void bridjs::Utils::Init(v8::Handle<v8::Object> utilsObj){
@@ -201,34 +203,36 @@ void bridjs::Utils::Init(v8::Handle<v8::Object> utilsObj){
 	NODE_SET_METHOD(utilsObj, "memoryCopy", MemCpy);
 }
 
-v8::Handle<v8::Value> bridjs::Utils::PointerToString(const v8::Arguments& args){
-	HandleScope scope;
+void bridjs::Utils::PointerToString(const v8::FunctionCallbackInfo<v8::Value>& args){
+	Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 	GET_POINTER_ARG(const char,ptr,args,0);
 	v8::Local<v8::String> str;
 
 	if(args.Length()>=2){
 		GET_INT32_ARG(length,args,1);
-		str = v8::String::New(ptr,length);
+                str = v8::String::NewFromUtf8(isolate,ptr,v8::String::kNormalString, length);
+		//str = v8::String::New(ptr,length);
 	}else{
-		str = v8::String::New(ptr);
+		//str = v8::String::New(ptr);
+                str = v8::String::NewFromUtf8(isolate,ptr);
 	}
 
 
-	return scope.Close(str);
+	args.GetReturnValue().Set(str);
 }
 
-Handle<Value> bridjs::Utils::wrapPointerToBuffer(const void* ptr){
-	HandleScope scope;
-	Handle<Value> result;
+Local<Value> bridjs::Utils::wrapPointerToBuffer(Isolate* isolate, const void* ptr) {
+    v8::EscapableHandleScope scope(isolate);
+    Handle<Value> result;
 
-	if(ptr!=NULL){
-		node::Buffer *buf = node::Buffer::New((char*)(&ptr), sizeof(void*));
-		result =  scope.Close(buf->handle_);
-	}else{
-		result = scope.Close(v8::Null());
-	}
+    if (ptr != NULL) {
+        v8::Local<v8::Object> buf = node::Buffer::New(isolate, (char*) (&ptr), sizeof (void*));
+        result = scope.Escape(buf);
+    } else {
+        result = scope.Escape(v8::Local<Primitive>::New(isolate, v8::Null(isolate)));
+    }
 
-	return result;
+    return result;
 
 	//memcpy(&pptr,node::Buffer::Data(buf), sizeof(void*));
 
@@ -244,26 +248,18 @@ void* bridjs::Utils::unwrapBufferToPointer(v8::Local<v8::Value> value){
 	return ptr;
 }
 
-Handle<v8::Value> bridjs::Utils::wrapPointer(const void* ptr){
-	HandleScope scope;
-	Handle<v8::Value> result;
-	
-	if(ptr!=NULL){
-		result =  scope.Close(bridjs::Pointer::NewInstance(ptr));
-	}else{
-		result = scope.Close(v8::Null());
-	}
-
-	//bridjs::Pointer *buf = bridjs::Pointer::New(ptr);
-	//result =  scope.Close(bridjs::Pointer::NewInstance(ptr));
-
-	return result;
-
-	//memcpy(&pptr,node::Buffer::Data(buf), sizeof(void*));
+Local<v8::Value> bridjs::Utils::wrapPointer(v8::Isolate* isolate,const void* ptr){
+    v8::EscapableHandleScope scope(isolate);
+    
+    if (ptr != NULL) {
+        return scope.Escape(bridjs::Pointer::NewInstance(isolate, ptr));
+    } else {
+        return scope.Escape(v8::Local<Primitive>::New(isolate, v8::Null(isolate)));
+    }
 }
 
 
-const void* bridjs::Utils::unwrapPointer(v8::Local<v8::Value> value){
+const void* bridjs::Utils::unwrapPointer(v8::Isolate* isolate, v8::Local<v8::Value> value){
 	const void* ptr;
 
 	//memcpy(&ptr, node::Buffer::Data(value->ToObject()), sizeof(void*));
@@ -275,7 +271,7 @@ const void* bridjs::Utils::unwrapPointer(v8::Local<v8::Value> value){
 		v8::Local<v8::Object> object = value->ToObject();
 		
 		if(object->InternalFieldCount()>0){
-			ptr = bridjs::Pointer::Data(object);
+			ptr = bridjs::Pointer::Data(isolate, object);
 		}else{
 			throw std::runtime_error("Invalid bridjs::Pointer object");
 		}
@@ -286,116 +282,133 @@ const void* bridjs::Utils::unwrapPointer(v8::Local<v8::Value> value){
 	return ptr;
 }
 
-v8::Handle<v8::String> bridjs::Utils::toV8String(const char val){
-	//HandleScope scope;
+v8::Local<v8::String> bridjs::Utils::toV8String(v8::Isolate* isolate, const char val){
+	//Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 	char str[] = {val, '\0'};
 
-	return v8::String::New(str);
+	return v8::String::NewFromUtf8(isolate,str);
 }
 
-v8::Handle<v8::Value> bridjs::Utils::MemCpy(const v8::Arguments& args){
-	HandleScope scope;
+void bridjs::Utils::MemCpy(const v8::FunctionCallbackInfo<v8::Value>& args){
+	Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 	GET_POINTER_ARG(void, pDst, args, 0);
 	GET_POINTER_ARG(void, pSrc, args, 1);
 	GET_INT64_ARG(size, args, 2);
 
 	memcpy(pDst, pSrc, size);
 
-	return scope.Close(v8::Undefined());
+	args.GetReturnValue().Set(v8::Undefined(isolate));
 }
 
-bridjs::ValueWrapper::ValueWrapper(v8::Persistent<v8::Value> value){
-	this->mValue = value;
+bridjs::ValueWrapper::ValueWrapper(v8::Isolate* isolate,
+        v8::Persistent<v8::Value> value):mpIsolate(isolate), mValue(isolate,value){
+
 }
 
-v8::Handle<v8::Value> bridjs::ValueWrapper::getValue(){
-	return this->mValue;
+v8::Local<v8::Value> bridjs::ValueWrapper::getValue(){
+	return v8::Local<v8::Value>::New(this->mpIsolate,this->mValue);
 }
 
-v8::Handle<v8::Value> bridjs::Utils::convertDataByType(std::shared_ptr<void> spData,const char type){
+v8::Local<v8::Value> bridjs::Utils::convertDataByType(v8::Isolate* isolate,std::shared_ptr<void> spData,const char type){
 	void* pData = spData.get();
 
-	switch(type){
-		case DC_SIGCHAR_VOID:{
-			return v8::Undefined();
-			}
-			break;
-		case DC_SIGCHAR_BOOL:{
-			return v8::Boolean::New(*(static_cast<DCbool*>(pData)));
-			}
-			break;
-		case DC_SIGCHAR_UCHAR:{
-			return (bridjs::Utils::toV8String(*(static_cast<DCuchar*>(pData))));
-			}
-			break;
-		case DC_SIGCHAR_CHAR:{
-			return (bridjs::Utils::toV8String(*(static_cast<DCchar*>(pData))));
-			}
-			break;
-        case DC_SIGCHAR_SHORT:{
-			return v8::Int32::New(*(static_cast<DCshort*>(pData)));
-			}
-			break;
-		case DC_SIGCHAR_USHORT:{
-			return v8::Uint32::New(*(static_cast<DCushort*>(pData)));
-			}
-			break;
-        case DC_SIGCHAR_INT:{
-			return v8::Int32::New(*(static_cast<DCint*>(pData)));
-			}
-			break;
-		case DC_SIGCHAR_UINT:{
-			return v8::Uint32::New(*(static_cast<DCuint*>(pData)));
-			}
-			break; 
-        case DC_SIGCHAR_LONG:{
-			return v8::Number::New(*(static_cast<DClong*>(pData)));
-			}
-			break;
-		case DC_SIGCHAR_ULONG:{
-			return v8::Number::New(*(static_cast<DCulong*>(pData)));
-			}
-			break;
-		case DC_SIGCHAR_LONGLONG:{
-			return v8::Number::New(static_cast<double>(*(static_cast<DClonglong*>(pData))));
-			}
-			break;
-		case DC_SIGCHAR_ULONGLONG:{
-			return v8::Number::New(static_cast<double>(*(static_cast<DCulonglong*>(pData))));
-			}
-			break;
-        case DC_SIGCHAR_FLOAT:{
-			return v8::Number::New(static_cast<double>(*(static_cast<DCfloat*>(pData))));
-			}
-			break;
-        case DC_SIGCHAR_DOUBLE:{
-			return v8::Number::New(static_cast<double>(*(static_cast<DCdouble*>(pData))));
-			}
-			break;
-		case DC_SIGCHAR_STRING:{
-			return WRAP_STRING(*(static_cast<const char**>(pData)));
-			}
-			break;
-        case DC_SIGCHAR_POINTER:{
-			return bridjs::Utils::wrapPointer(*(static_cast<DCpointer*>(pData)));
-			}
-			break;
-		case DC_SIGCHAR_STRUCT:{
-			return v8::Exception::TypeError(v8::String::New("Not implement"));
-		    }
-			break;
-		default:
-			std::stringstream message;
-			message<<"Unknown returnType: "<<type<<std::endl;
-
-			return v8::Exception::TypeError(v8::String::New(message.str().c_str()));
-		}
+    switch (type) {
+        case DC_SIGCHAR_VOID:
+        {
+            return v8::Undefined(isolate);
+        }
+            break;
+        case DC_SIGCHAR_BOOL:
+        {
+            return v8::Local<v8::Primitive>::New(isolate, v8::Boolean::New(isolate, *(static_cast<DCbool*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_UCHAR:
+        {
+            return (bridjs::Utils::toV8String(isolate, *(static_cast<DCuchar*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_CHAR:
+        {
+            return (bridjs::Utils::toV8String(isolate, *(static_cast<DCchar*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_SHORT:
+        {
+            return v8::Int32::New(isolate, *(static_cast<DCshort*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_USHORT:
+        {
+            return v8::Uint32::New(isolate,*(static_cast<DCushort*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_INT:
+        {
+            return v8::Int32::New(isolate,*(static_cast<DCint*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_UINT:
+        {
+            return v8::Uint32::New(isolate,*(static_cast<DCuint*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_LONG:
+        {
+            return v8::Number::New(isolate,*(static_cast<DClong*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_ULONG:
+        {
+            return v8::Number::New(isolate,*(static_cast<DCulong*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_LONGLONG:
+        {
+            return v8::Number::New(isolate,static_cast<double> (*(static_cast<DClonglong*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_ULONGLONG:
+        {
+            return v8::Number::New(isolate,static_cast<double> (*(static_cast<DCulonglong*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_FLOAT:
+        {
+            return v8::Number::New(isolate,static_cast<double> (*(static_cast<DCfloat*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_DOUBLE:
+        {
+            return v8::Number::New(isolate,static_cast<double> (*(static_cast<DCdouble*> (pData))));
+        }
+            break;
+        case DC_SIGCHAR_STRING:
+        {
+            return WRAP_STRING(*(static_cast<const char**> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_POINTER:
+        {
+            return bridjs::Utils::wrapPointer(isolate,*(static_cast<DCpointer*> (pData)));
+        }
+            break;
+        case DC_SIGCHAR_STRUCT:
+        {
+            return Exception::Error(String::NewFromUtf8(isolate,"Not implement"));
+        }
+            break;
+        default:
+            std::stringstream message;
+            message << "Unknown returnType: " << type << std::endl;
+            
+            return Exception::Error(String::NewFromUtf8(isolate,message.str().c_str()));
+    }
 }
 
 
 bridjs::ValueWrapper::~ValueWrapper(){
-	this->mValue.Dispose();
-	this->mValue.Clear();
+	this->mValue.Reset();
 }
 
 

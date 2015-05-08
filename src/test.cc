@@ -53,8 +53,8 @@ void bridjs::Test::afterCallAsync(uv_work_t *req) {
     //std::cout<<"Got it2"<<std::endl;
 }
 
-Handle<v8::Value> bridjs::Test::TestMultiplyFunction(const v8::Arguments& args) {
-    HandleScope scope;
+void bridjs::Test::TestMultiplyFunction(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
     GET_INT32_ARG(w, args, 0);
     GET_INT32_ARG(x, args, 1);
@@ -62,7 +62,7 @@ Handle<v8::Value> bridjs::Test::TestMultiplyFunction(const v8::Arguments& args) 
     GET_INT64_ARG(z, args, 3);
     GET_DOUBLE_ARG(e, args, 4);
 
-    return scope.Close(v8::Number::New(testMultiplyFunction(w, x, static_cast<const long> (y), z, e)));
+    args.GetReturnValue().Set(v8::Number::New(isolate,testMultiplyFunction(w, x, static_cast<const long> (y), z, e)));
 }
 
 extern "C" {
@@ -101,6 +101,7 @@ extern "C" {
     }
 
     double testArrayStructFunction(const TestArrayStruct* pTestStruct) {
+       // std::cout<<"Fwfewf"<<std::endl;
         return pTestStruct->w * pTestStruct->first[1] * pTestStruct->second[2];
     }
 
@@ -117,7 +118,8 @@ extern "C" {
         return returnValue;
     }
 
-	const char* testStringFunction(const char* pTestString){
-		return pTestString;
-	}
+    const char* testStringFunction(const char* pTestString){
+        //std::cout<<"testStringFunction "<<pTestString<<std::endl;
+        return pTestString;
+    }
 }

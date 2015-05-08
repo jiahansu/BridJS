@@ -41,7 +41,8 @@
 	GET_POINTER_ARG(DCCallVM,pVm,args,0)\
 	GET_POINTER_ARG(char,pFunction,args,1);\
 	if(pVm==NULL){ \
-		return v8::ThrowException(v8::String::New("DCCallVM was NULL"));\
+		isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,"DCCallVM was NULL")));\
+                return;\
 	}
 
 #define GET_INT32_ARG(name, args, index) \
@@ -54,14 +55,14 @@
    Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
     name = (*name ## Number)->Int32Value();\
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
-	v8::String::Utf8Value str(name ## Value); \
-	name = atol(*str); \
+    v8::String::Utf8Value str(name ## Value); \
+    name = atol(*str); \
   }else{ \
 	std::stringstream message; \
 	v8::String::Utf8Value valueStr(value); \
 	message<< "Invalid value for int32_t argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return; \
   }\
 
 #define GET_UINT32_ARG(name, args, index) \
@@ -74,14 +75,14 @@
    Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
     name = (*name ## Number)->Uint32Value();\
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
-	v8::String::Utf8Value str(name ## Value); \
-	name = atol(*str); \
+    v8::String::Utf8Value str(name ## Value); \
+    name = atol(*str); \
   }else{ \
 	std::stringstream message; \
 	v8::String::Utf8Value valueStr(value); \
 	message<< "Invalid value for int32_t argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(        String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return; \
   }\
 
 #define GET_FLOAT_ARG(name, args, index) \
@@ -94,14 +95,14 @@
     Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
 	name = static_cast<float>(name ## Number->Value()); \
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
-	v8::String::Utf8Value str(name ## Value); \
-	name = static_cast<float>(atof(*str)); \
+    v8::String::Utf8Value str(name ## Value); \
+    name = static_cast<float>(atof(*str)); \
   }else{ \
-	std::stringstream message; \
-	v8::String::Utf8Value valueStr(value); \
-	message<< "Invalid value for float argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    std::stringstream message; \
+    v8::String::Utf8Value valueStr(value); \
+    message<< "Invalid value for float argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return; \
   } 
 
 #define GET_INT64_ARG(name, args, index) \
@@ -113,14 +114,14 @@
  if (name ## Value->IsNumber()) { \
 	name = name ## Value->IntegerValue(); \
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
-	v8::String::Utf8Value str(name ## Value); \
+    v8::String::Utf8Value str(name ## Value); \
 	name = atol(*str); \
   }else{ \
-	std::stringstream message; \
-	v8::String::Utf8Value valueStr(value); \
-	message<< "Invalid value for int64_t argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    std::stringstream message; \
+    v8::String::Utf8Value valueStr(value); \
+    message<< "Invalid value for int64_t argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } 
 
 #define GET_DOUBLE_ARG(name, args, index) \
@@ -133,14 +134,14 @@
     Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
 	name = name ## Number->Value(); \
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
-	v8::String::Utf8Value str(name ## Value); \
-	name = atof(*str); \
+    v8::String::Utf8Value str(name ## Value); \
+    name = atof(*str); \
   }else{ \
-	std::stringstream message; \
-	v8::String::Utf8Value valueStr(value); \
-	message<< "Invalid value for double argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    std::stringstream message; \
+    v8::String::Utf8Value valueStr(value); \
+    message<< "Invalid value for double argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } 
 
 #define GET_BOOL_ARG(name, args, index) \
@@ -156,10 +157,11 @@
   }else if (name ## Value->IsNumber()) { \
     name = Local<Number>::Cast(name ## Value)->BooleanValue(); \
   }else{ \
-	std::stringstream message; \
-	v8::String::Utf8Value valueStr(value); \
-	message<< "Invalid value for bool argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    std::stringstream message; \
+    v8::String::Utf8Value valueStr(value); \
+    message<< "Invalid value for bool argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } 
 
 #define GET_CHAR_ARG(name, args, index) \
@@ -169,21 +171,22 @@
   Local<Value> name ## Value = value; \
   char name; \
   if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
-	v8::String::Utf8Value str(name ## Value); \
+    v8::String::Utf8Value str(name ## Value); \
     if(str.length()!=1){ \
-		std::stringstream message; \
-		message<<"Illegal cahr value: "<<(*str); \
-		return v8::ThrowException(v8::Exception::Error(String::New(message.str().c_str()))); \
-	} \
-	name = (*str)[0]; \
+        std::stringstream message; \
+        message<<"Illegal cahr value: "<<(*str); \
+        isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+        return;\
+    } \
+    name = (*str)[0]; \
   }else if (name ## Value->IsNumber()) { \
 	name = Local<Number>::Cast(name ## Value)->Int32Value(); \
   }else{ \
 	std::stringstream message; \
 	v8::String::Utf8Value valueStr(value); \
 	message<< "Invalid value for char argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } 
   
 #define GET_STRING_ARG(name, args, index) \
@@ -195,7 +198,8 @@
     std::stringstream message; \
 	v8::String::Utf8Value valueStr(value); \
 	message<< "Invalid value for string argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   }
 
 
@@ -205,7 +209,8 @@
     std::stringstream message; \
 	v8::String::Utf8Value valueStr(args[index]); \
 	message<< "Invalid value for Object argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } \
   Local<Object> name = name ## Value->ToObject();
 
@@ -216,18 +221,10 @@
     std::stringstream message; \
 	v8::String::Utf8Value valueStr(name ## Value); \
 	message<< "Invalid value for Array argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } \
   Local<Array> name = Local<Array>::Cast(name ## Value);
-/*  
-#define GET_POINTER_ARG(type, name, args, index) \
-  GET_STRING_ARG(name ## Pointer, args, index); \
-  type *name = (type*)bridjs::Utils::string2ptr(name ## Pointer);
-*/  
-#define GET_ASCII_STRING_ARG(name, args, index) \
-  GET_STRING_ARG(name ## Value, args, index); \
-  String::AsciiValue name ## AsciiValue(name ## Value); \
-  const char *name = *name ## AsciiValue;
 
 #define GET_POINTER_ARG(type, name, args, index) \
 	GET_POINTER_VALUE(type, name, args[index], index)
@@ -242,45 +239,49 @@
 	  name = (type*)(*name ## Value); \
   }else if (name ## Value->IsObject() || name ## Value->IsNull()) { \
 	  try{ \
-		name = (type*)bridjs::Utils::unwrapPointer(name ## Value); \
+		name = (type*)bridjs::Utils::unwrapPointer(isolate, name ## Value); \
 	  }catch(std::exception &e){ \
 		std::stringstream message; \
 		v8::String::Utf8Value valueStr(value); \
 		message<< "Invalid object for pointer argument " #name " at index ="<<index<<", value = "<<(*valueStr)<<": "<<e.what(); \
-		return v8::ThrowException(v8::String::New(message.str().c_str())); \
+		isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+                return;\
 	  } \
   }else{ \
 	std::stringstream message; \
 	v8::String::Utf8Value valueStr(value); \
 	message<< "Invalid value for pointer argument " #name " at index ="<<index<<", value = "<<(*valueStr); \
-    return v8::ThrowException(v8::String::New(message.str().c_str())); \
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,message.str().c_str()))); \
+    return;\
   } 
   
 
-#define THROW_EXCEPTION(message) ThrowException(Exception::Error(String::New(message)))
+#define THROW_EXCEPTION(message) isolate->ThrowException(Exception::Error(v8::String::NewFromUtf8(isolate,message))); return
+        
+        
 
 #define CHECK_ARGUMENT(args, num) \
 	if(args.Length()<num){ \
 		std::stringstream message; \
 		message<<"Illegal argument, it only had"<<args.Length()<<" arguments, but the number of arguments should be "<<num; \
-		return THROW_EXCEPTION(message.str().c_str()); \
+		THROW_EXCEPTION(message.str().c_str()); \
 	} 
 
-#define WRAP_BOOL(val) v8::Boolean::New(val)
-#define WRAP_CHAR(val) bridjs::Utils::toV8String(val)
-#define WRAP_SHORT(val) v8::Int32::New(val)
-#define WRAP_INT(val) v8::Int32::New(val)
-#define WRAP_LONG(val) v8::Number::New(val)
-#define WRAP_LONGLONG(val) v8::Number::New(static_cast<double>(val))
-#define WRAP_UCHAR(val) bridjs::Utils::toV8String(val)
-#define WRAP_USHORT(val) v8::Uint32::New(val)
-#define WRAP_UINT(val) v8::Uint32::New(val)
-#define WRAP_ULONG(val) v8::Number::New(val)
-#define WRAP_ULONGLONG(val) v8::Number::New(static_cast<double>(val))
-#define WRAP_FLOAT(val) v8::Number::New(val)
-#define WRAP_DOUBLE(val) v8::Number::New(val)
-#define WRAP_POINTER(val) bridjs::Utils::wrapPointer(val)
-#define WRAP_STRING(val) v8::String::New(val)
+#define WRAP_BOOL(val) v8::Boolean::New(isolate,val)
+#define WRAP_CHAR(val) bridjs::Utils::toV8String(isolate,val)
+#define WRAP_SHORT(val) v8::Int32::New(isolate,val)
+#define WRAP_INT(val) v8::Int32::New(isolate,val)
+#define WRAP_LONG(val) v8::Number::New(isolate,val)
+#define WRAP_LONGLONG(val) v8::Number::New(isolate,static_cast<double>(val))
+#define WRAP_UCHAR(val) bridjs::Utils::toV8String(isolate,val)
+#define WRAP_USHORT(val) v8::Uint32::New(isolate,val)
+#define WRAP_UINT(val) v8::Uint32::New(isolate,val)
+#define WRAP_ULONG(val) v8::Number::New(isolate,val)
+#define WRAP_ULONGLONG(val) v8::Number::New(isolate,static_cast<double>(val))
+#define WRAP_FLOAT(val) v8::Number::New(isolate,val)
+#define WRAP_DOUBLE(val) v8::Number::New(isolate,val)
+#define WRAP_POINTER(val) bridjs::Utils::wrapPointer(isolate,val)
+#define WRAP_STRING(val) String::NewFromUtf8(isolate,val)
 
 template< typename T >
 struct ArrayDeleter
@@ -296,23 +297,24 @@ namespace bridjs {
 	class Utils{
 	public:
 		static void Init(v8::Handle<v8::Object> utilsObj);
-		static v8::Handle<v8::Value> PointerToString(const v8::Arguments& args);
-		static v8::Handle<v8::Value> MemCpy(const v8::Arguments& args);
-		static v8::Handle<v8::Value> wrapPointerToBuffer(const void* ptr);
+		static void PointerToString(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static void MemCpy(const v8::FunctionCallbackInfo<v8::Value>& args);
+		static v8::Local<v8::Value> wrapPointerToBuffer(v8::Isolate* isolate, const void* ptr);
 		static void* unwrapBufferToPointer(v8::Local<v8::Value> value);
-		static v8::Handle<v8::Value> wrapPointer(const void* ptr);
-		static const void* unwrapPointer(v8::Local<v8::Value> buffer);
-		static v8::Handle<v8::String> toV8String(const char val);
+		static v8::Local<v8::Value> wrapPointer(v8::Isolate* isolate,const void* ptr);
+		static const void* unwrapPointer(v8::Isolate* isolate,v8::Local<v8::Value> buffer);
+		static v8::Local<v8::String> toV8String(v8::Isolate* isolate,const char val);
 		static size_t getTypeSize(const char type);
-		static v8::Handle<v8::Value> convertDataByType(std::shared_ptr<void> spData,const char type);
+		static v8::Local<v8::Value> convertDataByType(v8::Isolate* isolate,std::shared_ptr<void> spData,const char type);
 	};
 	class ValueWrapper{
 	private:
-		v8::Persistent<v8::Value> mValue;
+            v8::Isolate* mpIsolate;
+            v8::Persistent<v8::Value> mValue;
 	public:
-		v8::Handle<v8::Value> getValue();
-		ValueWrapper(v8::Persistent<v8::Value> value);
-		~ValueWrapper();
+            v8::Local<v8::Value> getValue();
+            ValueWrapper(v8::Isolate* isolate,v8::Persistent<v8::Value> value);
+            ~ValueWrapper();
 	};
 
 

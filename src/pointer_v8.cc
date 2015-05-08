@@ -32,6 +32,7 @@
  */
 #include "pointer_v8.h"
 #include "dyncall_v8_utils.h"
+#include "native_function_v8.h"
 
 using namespace bridjs;
 using namespace v8;
@@ -39,45 +40,46 @@ using namespace node;
 
 Persistent<Function> Pointer::constructor;
 
-v8::Handle<v8::Value> ToString(const v8::Arguments& args);
+void ToString(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 
 
 void Pointer::Init(v8::Handle<v8::Object> exports){
-	// Prepare constructor template
-	  Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
-	  tpl->SetClassName(String::NewSymbol("Pointer"));
+    Isolate* isolate = Isolate::GetCurrent();
+	  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate,New);
+	  tpl->SetClassName(v8::String::NewFromUtf8(isolate,"Pointer"));
 	  tpl->InstanceTemplate()->SetInternalFieldCount(4);
 	  // Prototype
-	  tpl->PrototypeTemplate()->Set(String::NewSymbol("getAddress"),
-		  FunctionTemplate::New(GetAddress)->GetFunction());
-	  tpl->PrototypeTemplate()->Set(String::NewSymbol("isNull"),
-		  FunctionTemplate::New(IsNull)->GetFunction());
-	  tpl->PrototypeTemplate()->Set(String::NewSymbol("toString"),
-		  FunctionTemplate::New(Pointer::ToString)->GetFunction());
-	  tpl->PrototypeTemplate()->Set(String::NewSymbol("slice"),
-		  FunctionTemplate::New(Pointer::Slice)->GetFunction());
-	  constructor = Persistent<Function>::New(tpl->GetFunction());
-	  exports->Set(String::NewSymbol("Pointer"), constructor);
+	  tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getAddress"),
+		  FunctionTemplate::New(isolate,GetAddress)->GetFunction());
+	  tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"isNull"),
+		  FunctionTemplate::New(isolate,IsNull)->GetFunction());
+	  tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"toString"),
+		  FunctionTemplate::New(isolate,Pointer::ToString)->GetFunction());
+	  tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"slice"),
+		  FunctionTemplate::New(isolate,Pointer::Slice)->GetFunction());
+	  constructor.Reset(isolate,tpl->GetFunction());
+	  exports->Set(v8::String::NewFromUtf8(isolate,"Pointer"), tpl->GetFunction());
 }
 
-v8::Handle<v8::Value> Pointer::ToString(const v8::Arguments& args){
-	HandleScope scope;
-	Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
-	std::stringstream ptrStream;
+void Pointer::ToString(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent();
+    HandleScope scope(isolate);
+    Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
+    std::stringstream ptrStream;
 
-	ptrStream<<"< Pointer: "<<std::hex<<obj->getAddress()<<" >"<<std::endl;
+    ptrStream << "< Pointer: " << std::hex << obj->getAddress() << " >" << std::endl;
 
-	return scope.Close(String::New((ptrStream.str().c_str())));
+    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate,(ptrStream.str().c_str())));
 }
 
-v8::Handle<v8::Value> Pointer::Slice(const v8::Arguments& args){
-	HandleScope scope;
-	Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
+void Pointer::Slice(const v8::FunctionCallbackInfo<v8::Value>& args){
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
+    Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
 
-	GET_INT64_ARG(start, args, 0);
+    GET_INT64_ARG(start, args, 0);
 
-	return Pointer::NewInstance(static_cast<const char*>(obj->getAddress())+start);
+    args.GetReturnValue().Set(Pointer::NewInstance(isolate,static_cast<const char*>(obj->getAddress())+start));
 }
 
 Pointer::Pointer(const void* ptr){
@@ -88,8 +90,8 @@ void* Pointer::getAddress(){
 	return const_cast<void*>(this->mPtr);
 }
 
-const void* Pointer::Data(v8::Handle<v8::Object> val){
-	HandleScope scope;
+const void* Pointer::Data(Isolate* isolate,v8::Handle<v8::Object> val){
+	HandleScope scope(isolate);
 	Pointer* obj = Pointer::Unwrap<Pointer>(val);
 
 
@@ -99,8 +101,8 @@ const void* Pointer::Data(v8::Handle<v8::Object> val){
 Pointer* Pointer::New(const void* ptr){
 	return new Pointer(ptr);
 }
-v8::Handle<v8::Value> Pointer::New(const v8::Arguments& args){
-	HandleScope scope;
+void Pointer::New(const v8::FunctionCallbackInfo<v8::Value>& args){
+	Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
   if (args.IsConstructCall()) {
 	  void* ptr;
@@ -116,38 +118,46 @@ v8::Handle<v8::Value> Pointer::New(const v8::Arguments& args){
 
     Pointer* obj = new Pointer(ptr);
     obj->Wrap(args.This());
-    return args.This();
+    args.GetReturnValue().Set(args.This());
   } else {
     const int argc = 1;
     Local<Value> argv[argc] = { args[0] };
-    return scope.Close(constructor->NewInstance(argc, argv));
+    Local<Function> cons = Local<Function>::New(isolate, constructor);
+    
+    args.GetReturnValue().Set(cons->NewInstance(argc, argv));
   }
 }
-v8::Handle<v8::Value> Pointer::NewInstance(const void* ptr){
-	HandleScope scope;
-
+v8::Local<v8::Object>  Pointer::NewInstance(v8::Isolate* isolate,const void* ptr){
+    v8::EscapableHandleScope scope(isolate);
+    Local<v8::Object> returnObject;
+    Local<Function> cons = Local<Function>::New(isolate, constructor);    
     Local<Value> argv[1] = {
-		Local<Value>::New(bridjs::Utils::wrapPointerToBuffer(ptr))
+		Local<Value>::New(isolate, bridjs::Utils::wrapPointerToBuffer(isolate,ptr))
     };
+    
+    returnObject = cons->NewInstance(1, argv);
 
-    return scope.Close(constructor->NewInstance(1, argv));
+    
+    return scope.Escape(returnObject);
 }
 
-v8::Handle<v8::Value> Pointer::GetAddress(const v8::Arguments& args){
-	HandleScope scope;
-	Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
-	std::stringstream ptrStream;
+void Pointer::GetAddress(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent();
+    HandleScope scope(isolate);
+    Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
+    std::stringstream ptrStream;
 
-	ptrStream<<obj->mPtr;
+    ptrStream << obj->mPtr;
 
-	return scope.Close(String::New((ptrStream.str().c_str())));
+    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate,(ptrStream.str().c_str())));
 }
 
-v8::Handle<v8::Value> Pointer::IsNull(const v8::Arguments& args){
-	HandleScope scope;
-	Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
+void Pointer::IsNull(const v8::FunctionCallbackInfo<v8::Value>& args){
+    Isolate* isolate = Isolate::GetCurrent();
+    HandleScope scope(isolate);
+    Pointer* obj = ObjectWrap::Unwrap<Pointer>(args.This());
 
-	return scope.Close(Boolean::New(obj->mPtr==NULL));
+    args.GetReturnValue().Set(Boolean::New(isolate,obj->mPtr == NULL));
 }
 
 Pointer::~Pointer(){

@@ -30,6 +30,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+#include <uv.h>	
 #include "dynload_v8.h"
 #include "dyncall_v8_utils.h"
 
@@ -48,7 +50,6 @@ typedef unsigned long int DWORD;
 
 extern "C" {
 #include "dynload.h"
-#include <uv.h>	
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif
@@ -121,8 +122,8 @@ void Dynload::Init(v8::Handle<v8::Object> dynloadObj) {
     EXPORT_FUNCTION(dynloadObj, bridjs::Dynload, symsNameFromValue);
 }
 
-Handle<Value> Dynload::loadLibrary(const Arguments& args) {
-    HandleScope scope;
+void Dynload::loadLibrary(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     v8::String::Utf8Value libpath(args[0]);
     DLLib *lib = NULL;
 
@@ -145,16 +146,21 @@ Handle<Value> Dynload::loadLibrary(const Arguments& args) {
             gLoadedLibraryMap[*libpath] = lib;
         }
     } catch (...) {
-        std::cerr << "Unknown exception for loading library: " << *libpath << std::endl;
+        std::stringstream message;
+        message << "Unknown exception for loading library: " << *libpath;
+        
+        std::cerr<<message.str()<<std::endl;
+        
+        THROW_EXCEPTION( message.str().c_str());
     }
 
     uv_mutex_unlock(&gLoadLubraryMutex);
-
-    return scope.Close(bridjs::Utils::wrapPointer(lib));
+    
+    args.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,lib));
 }
 
-Handle<Value> Dynload::freeLibrary(const Arguments& args) {
-    HandleScope scope;
+void Dynload::freeLibrary(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
     GET_POINTER_ARG(DLLib, lib, args, 0);
     dlFreeLibrary(lib);
@@ -163,22 +169,24 @@ Handle<Value> Dynload::freeLibrary(const Arguments& args) {
 
         message << "Illegal library pointer: " << lib << std::endl;
 
-        return THROW_EXCEPTION(message.str().c_str());
+        THROW_EXCEPTION(message.str().c_str());
     }
 
-    return scope.Close(Undefined());
+    args.GetReturnValue().Set(Undefined(isolate));
 }
 
-Handle<Value> Dynload::findSymbol(const Arguments& args) {
-    HandleScope scope;
+void Dynload::findSymbol(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DLLib, lib, args, 0);
-    GET_ASCII_STRING_ARG(name, args, 1);
-    void* symbol = dlFindSymbol(lib, name);
-    return scope.Close(bridjs::Utils::wrapPointer(symbol));
+    GET_STRING_ARG(name, args, 1);
+    v8::String::Utf8Value valueStr(name);
+    
+    void* symbol = dlFindSymbol(lib, *valueStr);
+    args.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,symbol));
 }
 
-Handle<Value> Dynload::symsInit(const Arguments& args) {
-    HandleScope scope;
+void Dynload::symsInit(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     v8::String::Utf8Value libpath(args[0]);
     DLSyms *pSyms = NULL;
 
@@ -212,41 +220,45 @@ Handle<Value> Dynload::symsInit(const Arguments& args) {
             throw std::runtime_error("Fail to load library symbols");
         }
     } catch (std::exception &e) {
-        return THROW_EXCEPTION(e.what());
+        THROW_EXCEPTION(e.what());
     }
 #endif
 
-    return scope.Close(bridjs::Utils::wrapPointer(pSyms));
+    args.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,pSyms));
 }
 
-Handle<Value> Dynload::symsCleanup(const Arguments& args) {
-    HandleScope scope;
+void Dynload::symsCleanup(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DLSyms, pSyms, args, 0);
     //removeLibraryFromMap(pSyms->pLib);
     dlSymsCleanup(pSyms);
-    return scope.Close(Undefined());
+    args.GetReturnValue().Set(Undefined(isolate));
 }
 
-Handle<Value> Dynload::symsCount(const Arguments& args) {
-    HandleScope scope;
+void Dynload::symsCount(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DLSyms, pSyms, args, 0);
 
     int count = dlSymsCount(pSyms);
-    return scope.Close(Number::New(count));
+    args.GetReturnValue().Set(Number::New(isolate,count));
 }
 
-Handle<Value> Dynload::symsName(const Arguments& args) {
-    HandleScope scope;
+void Dynload::symsName(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); 
+    HandleScope scope(isolate);
     GET_POINTER_ARG(DLSyms, pSyms, args, 0);
     GET_INT32_ARG(index, args, 1);
     const char* name = dlSymsName(pSyms, index);
-    return scope.Close(name ? String::New(name) : String::Empty());
+    
+    args.GetReturnValue().Set(name ? v8::String::NewFromUtf8(isolate,name) : String::Empty(isolate));
 }
 
-Handle<Value> Dynload::symsNameFromValue(const Arguments& args) {
-    HandleScope scope;
+void Dynload::symsNameFromValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    Isolate* isolate = Isolate::GetCurrent(); 
+    HandleScope scope(isolate);
     GET_POINTER_ARG(DLSyms, pSyms, args, 0);
     GET_POINTER_ARG(void, value, args, 1);
     const char* name = dlSymsNameFromValue(pSyms, value);
-    return scope.Close(String::New(name));
+    
+    args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate,name));
 }

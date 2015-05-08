@@ -33,7 +33,7 @@
 #pragma once
 
 #include "pointer_v8.h"
-
+#include <v8-util.h>
 #include <node.h>
 #include <memory>
 #include <node_buffer.h>
@@ -49,16 +49,16 @@ namespace bridjs{
 	class Struct :public node::ObjectWrap{
 public:
 	static void Init(v8::Handle<v8::Object> exports);
-	static v8::Handle<v8::Value> New(const v8::Arguments& args);
-	static v8::Handle<v8::Value> GetSize(const v8::Arguments& args);
-	static v8::Handle<v8::Value> GetField(const v8::Arguments& args);
-	static v8::Handle<v8::Value> SetField(const v8::Arguments& args);
-	static v8::Handle<v8::Value> GetSignature(const v8::Arguments& args);
-	static v8::Handle<v8::Value> GetFieldType(const v8::Arguments& args);
-	static v8::Handle<v8::Value> GetFieldOffset(const v8::Arguments& args);
-	static v8::Handle<v8::Value> GetFieldCount(const v8::Arguments& args);
-	static v8::Handle<v8::Value> ToString(const v8::Arguments& args);
-	static Struct* New(const std::vector<char> &fieldType,std::map<uint32_t,v8::Local<v8::Object>> &subStructMap);
+	static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void GetSize(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void GetField(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void SetField(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void GetSignature(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void GetFieldType(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static void ToString(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static Struct* New(v8::Isolate* pIsolate,const std::vector<char> &fieldType,std::map<uint32_t,v8::Local<v8::Object>> &subStructMap);
 
 	//DCCallVM* getVM() const;
 	static const size_t getAlignSize(size_t size, size_t alignment);
@@ -76,12 +76,12 @@ public:
 protected:
 	static v8::Persistent<v8::Function> constructor;
 	std::vector<char> mFieldTypes;
-	std::map<uint32_t,v8::Persistent<v8::Object>> mSubStructMap;
+	v8::StdPersistentValueMap<uint32_t,v8::Object> mSubStructMap;
 	std::vector<size_t> mOffsets;
 	size_t mSize;
 	size_t mAligment;
 
-	Struct(const std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap,const size_t alignment);
+	Struct(v8::Isolate* pIsolate,const std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap,const size_t alignment);
 	virtual void checkRange(const uint32_t index) const;
 	const size_t deriveLayout(const size_t alignment);
 	Struct* getSubStruct(uint32_t index);

@@ -1,3 +1,7 @@
+linux_x64
+linux_ia32
+win32_x64
+win32_ia32
 lib/bridjs/win32_x64
 node_modules
 dyncall
@@ -9,3 +13,5 @@ node-x86
 win32_x64/binding.gyp
 /build/netbeans/build/
 /build/netbeans/dist/
+/ide/netbeans/dist/
+/ide/netbeans/build/

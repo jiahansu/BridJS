@@ -50,11 +50,11 @@ namespace bridjs {
     class ArrayStruct : public bridjs::Struct {
     public:
         static void Init(v8::Handle<v8::Object> exports);
-        static v8::Handle<v8::Value> New(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetFieldType(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetFieldOffset(const v8::Arguments& args);
-        static v8::Handle<v8::Value> GetFieldCount(const v8::Arguments& args);
-        static ArrayStruct* New(const char type, const size_t length, const size_t alignment = DEFAULT_ALIGNMENT);
+        static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetFieldType(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static void GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static ArrayStruct* New(v8::Isolate *isolate,const char type, const size_t length, const size_t alignment = DEFAULT_ALIGNMENT);
         
         //DCCallVM* getVM() const;
         virtual const char getFieldType(const uint32_t index) const;
@@ -68,7 +68,7 @@ namespace bridjs {
         static std::vector<char> mEmptyTypes;
         static std::map<uint32_t,v8::Local<v8::Object>> mEmptySubStructMap;
         
-        ArrayStruct(const char type, const size_t length, const size_t aligment = DEFAULT_ALIGNMENT);
+        ArrayStruct(v8::Isolate *isolate,const char type, const size_t length, const size_t aligment = DEFAULT_ALIGNMENT);
         virtual void checkRange(const uint32_t index) const;
         const size_t deriveArrayLayout(const size_t alignment);
         virtual size_t getFieldOffset(uint32_t index) const;

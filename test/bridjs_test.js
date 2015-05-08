@@ -95,6 +95,7 @@ var lib;
         log.info("2 x 2 x 2 x 2 x 2.5 = " + ret);
 
         lib = bridjs.dl.loadLibrary(libPath);
+        
         testMultiplyFunction = bridjs.dl.findSymbol(lib, "testMultiplyFunction");
         testStructFunction = bridjs.dl.findSymbol(lib, "testStructFunction");
         testStructValueFunction = bridjs.dl.findSymbol(lib, "testStructValueFunction");
@@ -388,6 +389,7 @@ var lib;
             log.info("testArrayStruct's size: "+bridjs.getStructSize(testArrayStruct));
             try{
                 ret = testerInstance.testArrayStructFunction(testArrayStruct);
+                //log.info("efwefe");
                 assert(false, "Fail to handle non-pointer type value");
             }catch(e){
                 //pass
@@ -432,9 +434,11 @@ var lib;
             assert(doubleValue.get() === 2.5 ,"Fail to call testerInstance.testValuePassByPointerFunction");
             //bridjs.unregister(Tester);
             log.info("Test prototype binding pass");
+            //log.info(testerInstance.testStringFunction(testString));
+            assert(testerInstance.testStringFunction(testString)===testString ,"Fail to call testerInstance.testStringFunction synchronously");
             
             bridjs.async(testerInstance).testStringFunction(testString, function(result){
-                //log.info(result.e);
+                //log.info(result);
                 assert(testString===result ,"Fail to call testerInstance.testStringFunction asynchronously");
             });
             try{

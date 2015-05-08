@@ -36,15 +36,15 @@
 namespace bridjs {
 class Dynload {
 public: 
-static v8::Handle<v8::Value> loadLibrary(const v8::Arguments& args);
-static v8::Handle<v8::Value> freeLibrary(const v8::Arguments& args);
-static v8::Handle<v8::Value> findSymbol(const v8::Arguments& args);
+static void loadLibrary(const v8::FunctionCallbackInfo<v8::Value>& args);
+static void freeLibrary(const v8::FunctionCallbackInfo<v8::Value>& args);
+static void findSymbol(const v8::FunctionCallbackInfo<v8::Value>& args);
 
-static v8::Handle<v8::Value> symsInit(const v8::Arguments& args);
-static v8::Handle<v8::Value> symsCleanup(const v8::Arguments& args);
-static v8::Handle<v8::Value> symsCount(const v8::Arguments& args);
-static v8::Handle<v8::Value> symsName(const v8::Arguments& args);
-static v8::Handle<v8::Value> symsNameFromValue(const v8::Arguments& args);
+static void symsInit(const v8::FunctionCallbackInfo<v8::Value>& args);
+static void symsCleanup(const v8::FunctionCallbackInfo<v8::Value>& args);
+static void symsCount(const v8::FunctionCallbackInfo<v8::Value>& args);
+static void symsName(const v8::FunctionCallbackInfo<v8::Value>& args);
+static void symsNameFromValue(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 static void Init(v8::Handle<v8::Object> exports);
 }; // namespace dynload
