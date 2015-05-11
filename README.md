@@ -20,11 +20,11 @@ Like [BridJ](http://bridj.googlecode.com), BridJS also has some limitations:
 * Windows x64, Linux x86/x64
 
 ###Installation
-#### If node.js version is higher or equal than v0.12.0
+If node.js version is higher or equal than v0.12.0:
 ``` bash
 npm install bridjs
 ```
-#### If node.js version is lower or equal than v0.10.38
+If node.js version is lower or equal than v0.10.38:
 ``` bash
 npm install bridjs@0.1.9-3
 ```
