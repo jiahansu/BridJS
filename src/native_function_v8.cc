@@ -48,7 +48,8 @@ Persistent<v8::Function> bridjs::NativeFunction::constructor;
 
 Persistent<v8::String> ARGUMENTS_NAME;
 
-ArgumentCollection::ArgumentCollection(const v8::Arguments* pArgs) : mpArgs(pArgs), ValueCollection() {
+ArgumentCollection::ArgumentCollection(const v8::Arguments* pArgs) : ValueCollection(),
+        mpArgs(pArgs) {
 
 };
 
@@ -64,7 +65,7 @@ ArgumentCollection::~ArgumentCollection() {
 
 }
 
-ArrayCollection::ArrayCollection(const v8::Handle<v8::Array> arr) : mArray(arr), ValueCollection() {
+ArrayCollection::ArrayCollection(const v8::Handle<v8::Array> arr) : ValueCollection(), mArray(arr) {
 
 }
 
@@ -80,7 +81,7 @@ ArrayCollection::~ArrayCollection() {
 
 }
 
-ObjectCollection::ObjectCollection(const v8::Handle<v8::Object> arr) : mObject(arr), ValueCollection() {
+ObjectCollection::ObjectCollection(const v8::Handle<v8::Object> arr) : ValueCollection(),mObject(arr) {
 
 }
 

@@ -1,6 +1,6 @@
 {
     "name": "bridjs",
-    "version": "0.1.8-1",
+    "version": "0.1.9-2",
     "description": "V8 bindings for dyncall, and BridJ-like API for nodejs.",
     "keywords": [
         "dyncall",
@@ -21,16 +21,13 @@
         "url": "https://github.com/jiahansu/BridJS/issues"
     },
     "engines": {
-        "node": ">=0.10.8"
+        "node": "<=0.10.38"
     },
     "scripts": {
         "test": "vows"
     },
     "directories": {
-        "win32_x64": "win32_x64",
-        "wind32_ia32": "win32_ia32",
-        "linux_x64": "linux_x64",
-        "linux_ia32": "linux_ia32",
+        "deps": "deps",
         "sample": "sample",
         "test": "test",
         "lib": "lib"

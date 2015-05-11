@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f2" displayName="dyncall" projectFiles="true">
+      <itemPath>../../deps/dyncall-0.7/include/dyncall.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_alloc_wx.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_args.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_callback.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_callf.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_config.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_macros.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_signature.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_thunk.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_types.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dyncall_value.h</itemPath>
+      <itemPath>../../deps/dyncall-0.7/include/dynload.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>../../src/array_struct_v8.h</itemPath>
+      <itemPath>../../src/dyncall_v8.h</itemPath>
+      <itemPath>../../src/dyncall_v8_utils.h</itemPath>
+      <itemPath>../../src/dyncallback_v8.h</itemPath>
+      <itemPath>../../src/dynload_v8.h</itemPath>
+      <itemPath>../../src/native_function_v8.h</itemPath>
+      <itemPath>../../src/pointer_v8.h</itemPath>
+      <itemPath>../../src/struct_v8.h</itemPath>
+      <itemPath>../../src/test.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f1" displayName="lib" projectFiles="true">
+      <itemPath>../../lib/bridjs.js</itemPath>
+      <itemPath>../../lib/bridjs_exception.js</itemPath>
+      <itemPath>../../lib/callback_wrapper.js</itemPath>
+      <itemPath>../../lib/function_callback_wrapper.js</itemPath>
+      <itemPath>../../lib/native_lib.js</itemPath>
+      <itemPath>../../lib/pass_type_wrapper.js</itemPath>
+      <itemPath>../../lib/struct_field.js</itemPath>
+      <itemPath>../../lib/utils.js</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../../src/array_struct_v8.cc</itemPath>
+      <itemPath>../../src/bridjs_module.cc</itemPath>
+      <itemPath>../../src/dyncall_v8.cc</itemPath>
+      <itemPath>../../src/dyncall_v8_utils.cc</itemPath>
+      <itemPath>../../src/dyncallback_v8.cc</itemPath>
+      <itemPath>../../src/dynload_v8.cc</itemPath>
+      <itemPath>../../src/native_function_v8.cc</itemPath>
+      <itemPath>../../src/pointer_v8.cc</itemPath>
+      <itemPath>../../src/struct_v8.cc</itemPath>
+      <itemPath>../../src/test.cc</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug_X64" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <architecture>2</architecture>
+          <standard>8</standard>
+          <incDir>
+            <pElem>../../deps/dyncall-0.8/include</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/deps/v8/include</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/src</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/deps/uv/include</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <fortranCompilerTool>
+          <architecture>2</architecture>
+        </fortranCompilerTool>
+        <asmTool>
+          <architecture>2</architecture>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/../../../linux_x64/bridjs.node</output>
+          <linkerLibItems>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdyncall_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdyncallback_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdynload_s.a</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="../../deps/dyncall-0.7/include/dyncall.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dynload.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/callback_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/function_callback_wrapper.js"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/native_lib.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/pass_type_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/struct_field.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/utils.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/bridjs_module.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/test.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/test.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release_X64" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>2</architecture>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>2</architecture>
+          <standard>8</standard>
+          <incDir>
+            <pElem>../../deps/dyncall-0.8/include</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/deps/v8/include</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/src</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/deps/uv/include</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>2</architecture>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+          <architecture>2</architecture>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/../../../linux_x64/bridjs.node</output>
+          <stripSymbols>true</stripSymbols>
+          <linkerLibItems>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdyncall_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdyncallback_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdynload_s.a</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="../../deps/dyncall-0.7/include/dyncall.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dynload.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/callback_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/function_callback_wrapper.js"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/native_lib.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/pass_type_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/struct_field.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/utils.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/bridjs_module.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/test.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/test.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release_X86" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+          <standard>8</standard>
+          <incDir>
+            <pElem>../../deps/dyncall-0.8/include</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/deps/v8/include</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/src</pElem>
+            <pElem>/home/jiahan/.node-gyp/0.10.26/deps/uv/include</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <architecture>1</architecture>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+          <architecture>1</architecture>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/../../../linux_ia32/bridjs.node</output>
+          <stripSymbols>true</stripSymbols>
+          <linkerLibItems>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdyncall_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdyncallback_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_ia32/libdynload_s.a</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="../../deps/dyncall-0.7/include/dyncall.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dynload.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/callback_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/function_callback_wrapper.js"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/native_lib.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/pass_type_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/struct_field.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/utils.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/bridjs_module.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/dyncall_v8.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/dyncall_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/dyncall_v8_utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/dyncallback_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/dynload_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/native_function_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/pointer_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/test.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/test.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

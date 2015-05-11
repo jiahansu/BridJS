@@ -110,9 +110,9 @@ v8::Handle<v8::Value> bridjs::ArrayStruct::New(const v8::Arguments& args) {
     }
 }
 
-bridjs::ArrayStruct::ArrayStruct(const char type, const size_t length,
-								 const size_t alignment) : mType(type), mLength(length), 
-								 bridjs::Struct(bridjs::ArrayStruct::mEmptyTypes, bridjs::ArrayStruct::mEmptySubStructMap, alignment) {
+bridjs::ArrayStruct::ArrayStruct(const char type, const size_t length, const size_t alignment) :
+    bridjs::Struct(bridjs::ArrayStruct::mEmptyTypes, bridjs::ArrayStruct::mEmptySubStructMap, alignment), 
+        mType(type), mLength(length){
 
     this->mSize = this->deriveArrayLayout(alignment);
 }

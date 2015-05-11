@@ -80,7 +80,6 @@ void init(Handle<Object> target) {
     Local<Object> dynloadObj = Object::New();
     Local<Object> dyncallObj = Object::New();
     Local<Object> dyncallBackObj = Object::New();
-    Local<Object> dcbObj = Object::New();
     Local<Object> signatureObj = Object::New();
     Local<Object> utilsObj = Object::New();
     Local<Object> testObj = Object::New();

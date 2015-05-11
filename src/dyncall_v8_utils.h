@@ -54,7 +54,6 @@
    Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
     name = (*name ## Number)->Int32Value();\
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
 	v8::String::Utf8Value str(name ## Value); \
 	name = atol(*str); \
   }else{ \
@@ -74,7 +73,6 @@
    Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
     name = (*name ## Number)->Uint32Value();\
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
 	v8::String::Utf8Value str(name ## Value); \
 	name = atol(*str); \
   }else{ \
@@ -94,7 +92,6 @@
     Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
 	name = static_cast<float>(name ## Number->Value()); \
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
 	v8::String::Utf8Value str(name ## Value); \
 	name = static_cast<float>(atof(*str)); \
   }else{ \
@@ -113,7 +110,6 @@
  if (name ## Value->IsNumber()) { \
 	name = name ## Value->IntegerValue(); \
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
 	v8::String::Utf8Value str(name ## Value); \
 	name = atol(*str); \
   }else{ \
@@ -133,7 +129,6 @@
     Local<Number> name ## Number = Local<Number>::Cast(name ## Value); \
 	name = name ## Number->Value(); \
   }else if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
 	v8::String::Utf8Value str(name ## Value); \
 	name = atof(*str); \
   }else{ \
@@ -169,7 +164,6 @@
   Local<Value> name ## Value = value; \
   char name; \
   if(name ## Value->IsString()){ \
-    Local<String> stringValue = Local<String>::Cast(name ## Value); \
 	v8::String::Utf8Value str(name ## Value); \
     if(str.length()!=1){ \
 		std::stringstream message; \

@@ -730,7 +730,6 @@ void bridjs::Struct::setField(const uint32_t index, std::shared_ptr<void> pValue
 
 std::string bridjs::Struct::getSignature() {
     char type;
-    Struct* pSubStruct = NULL;
     std::stringstream sig;
 
     for (uint32_t i = 0; i<this->mFieldTypes.size(); ++i) {
