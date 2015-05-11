@@ -17,7 +17,7 @@ Like [BridJ](http://bridj.googlecode.com), BridJS also has some limitations:
 
 ###Requirement
 * [nodejs](http://nodejs.org/) v0.10.8 or higher
-* Windows with [Visual C++ Redistributable for Visual Studio 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40784) or Linux
+* Windows x64, Linux x86/x64
 
 ###Installation
 ``` bash
@@ -170,27 +170,6 @@ var nativeModule = new NativeModule();
 var returnNativeDouble = nativeModule.testValuePassByPointerFunction(bridjs.byPointer(nativeDouble));    
 
 var result = returnNativeDouble.get();
-```
-###Build binary addon
-####1. Windows
-----------
-
-``` bash
-Open build/vc11/binding.sln to build native 
-```
-####2. Linux
---------
-x64 addon
-
-``` bash
-cd build/netbeans
-make -f nbproject/Makefile-Release_X64.mk QMAKE= SUBPROJECTS= .build-conf
-```
-x86 addon
-
-``` bash
-cd build/netbeans
-make -f nbproject/Makefile-Release_X86.mk QMAKE= SUBPROJECTS= .build-conf
 ```
 
 ###License
