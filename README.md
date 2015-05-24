@@ -17,7 +17,7 @@ Like [BridJ](http://bridj.googlecode.com), BridJS also has some limitations:
 
 ###Requirement
 * [nodejs](http://nodejs.org/) v0.10.8 or higher
-* Windows x64, Linux x86/x64 & MAC OSX
+* Windows x64, Linux x86/x64 & Mac OSX
 
 ###Installation
 If node.js version is higher or equal than v0.12.0:
