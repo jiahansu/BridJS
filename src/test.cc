@@ -84,7 +84,7 @@ extern "C" {
 
     double testStructFunction(const TestStruct *pTestStruct) {
 
-        //std::cout<<pTestStruct->e<<std::endl;
+        //std::cout<<"Test struct size: "<<sizeof(TestStruct)<<std::endl;
 
         return pTestStruct->w * pTestStruct->x * pTestStruct->y * pTestStruct->z * pTestStruct->e;
     }

@@ -54,7 +54,7 @@ namespace bridjs {
         CallbackWrapper(v8::Isolate* isolate, const char returnType, 
                 const std::vector<char> &argumentTypes, 
                 v8::Persistent<v8::Object> &pCallbackObject);
-        const char onCallback(DCCallback* cb, DCArgs* args, DCValue* result);
+        char onCallback(DCCallback* cb, DCArgs* args, DCValue* result);
         uv_mutex_t* getMutex();
         v8::Isolate* getIsolate();
         virtual ~CallbackWrapper();

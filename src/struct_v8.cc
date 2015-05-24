@@ -214,7 +214,7 @@ void bridjs::Struct::ToString(const v8::FunctionCallbackInfo<v8::Value>& args) {
     args.GetReturnValue().Set(WRAP_STRING(obj->toString().c_str()));
 }
 
-const size_t bridjs::Struct::getAlignSize(size_t size, size_t alignment) {
+size_t bridjs::Struct::getAlignSize(size_t size, size_t alignment) {
     size_t mod = (size) % alignment;
     if (mod) {
         size_t rest = alignment - mod;
@@ -224,7 +224,7 @@ const size_t bridjs::Struct::getAlignSize(size_t size, size_t alignment) {
     }
 }
 
-const size_t bridjs::Struct::getFieldsSize(const std::vector<char> &fieldTypes, const size_t alignment) {
+size_t bridjs::Struct::getFieldsSize(const std::vector<char> &fieldTypes, const size_t alignment) {
     size_t size = 0;
 
     for (uint32_t i = 0; i < fieldTypes.size(); ++i) {
@@ -236,7 +236,7 @@ const size_t bridjs::Struct::getFieldsSize(const std::vector<char> &fieldTypes, 
     return size;
 }
 
-const size_t bridjs::Struct::getAlignmentSize(const char type, const size_t typeSize, const bool isFirst) {
+size_t bridjs::Struct::getAlignmentSize(const char type, const size_t typeSize, const bool isFirst) {
 
     /*
     if (actualAlignType == ALIGN_NONE) {
@@ -275,7 +275,7 @@ const size_t bridjs::Struct::getAlignmentSize(const char type, const size_t type
 
 }
 
-const size_t bridjs::Struct::addPadding(size_t calculatedSize, const size_t alignment) {
+size_t bridjs::Struct::addPadding(size_t calculatedSize, const size_t alignment) {
     // Structure size must be an integral multiple of its alignment,
     // add padding if necessary.
     //if (actualAlignType != ALIGN_NONE) {
@@ -445,7 +445,7 @@ bridjs::Struct::Struct(Isolate* pIsolate,const std::vector<char> &fieldTypes,
     mSize = this->deriveLayout(alignment);
 }
 
-const size_t bridjs::Struct::deriveLayout(const size_t alignment) {
+size_t bridjs::Struct::deriveLayout(const size_t alignment) {
     size_t calculatedSize = 0;
     char type;
     size_t typeSize, fieldAlignment, alignmentInfo = alignment;
@@ -505,18 +505,18 @@ calculatedSize += structField.size;
     return calculatedSize;
 }
 
-const size_t bridjs::Struct::getSize() const {
+size_t bridjs::Struct::getSize() const {
     return this->mSize;
 }
 
-const char bridjs::Struct::getFieldType(const uint32_t index) const {
+char bridjs::Struct::getFieldType(const uint32_t index) const {
     //std::cout<<this->mArgumentTypes<<std::endl;
     this->checkRange(index);
 
     return mFieldTypes.at(index);
 }
 
-const size_t bridjs::Struct::getFieldCount() const {
+size_t bridjs::Struct::getFieldCount() const {
 
     return this->mFieldTypes.size();
 }

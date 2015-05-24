@@ -611,11 +611,11 @@ bridjs::NativeFunction::NativeFunction(void *pSymbol, const char returnType,
     this->mArgumentTypes.shrink_to_fit();
 }
 
-const char bridjs::NativeFunction::getReturnType() const {
+char bridjs::NativeFunction::getReturnType() const {
     return this->mReturnType;
 }
 
-const char bridjs::NativeFunction::getArgumentType(const uint32_t index) const {
+char bridjs::NativeFunction::getArgumentType(const uint32_t index) const {
     //std::cout<<this->mArgumentTypes<<std::endl;
     if (index<this->mArgumentTypes.size()) {
         return mArgumentTypes.at(index);
@@ -628,7 +628,7 @@ const char bridjs::NativeFunction::getArgumentType(const uint32_t index) const {
     }
 }
 
-const size_t bridjs::NativeFunction::getArgumentLength() const {
+size_t bridjs::NativeFunction::getArgumentLength() const {
 
     return this->mArgumentTypes.size();
 }

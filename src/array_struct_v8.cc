@@ -126,7 +126,7 @@ bridjs::ArrayStruct::ArrayStruct(v8::Isolate* pIsolate, const char type, const s
     this->mSize = this->deriveArrayLayout(alignment);
 }
 
-const size_t bridjs::ArrayStruct::deriveArrayLayout(const size_t alignment) {
+size_t bridjs::ArrayStruct::deriveArrayLayout(const size_t alignment) {
     size_t calculatedSize = 0;
     size_t typeSize, fieldAlignment, alignmentInfo = alignment;
     //Struct* pSubStruct = NULL;
@@ -159,14 +159,14 @@ const size_t bridjs::ArrayStruct::deriveArrayLayout(const size_t alignment) {
     return calculatedSize;
 }
 
-const char bridjs::ArrayStruct::getFieldType(const uint32_t index) const {
+char bridjs::ArrayStruct::getFieldType(const uint32_t index) const {
     //std::cout<<this->mArgumentTypes<<std::endl;
     this->checkRange(index);
 
     return this->mType;
 }
 
-const size_t bridjs::ArrayStruct::getFieldCount() const {
+size_t bridjs::ArrayStruct::getFieldCount() const {
 
     return this->mLength;
 }

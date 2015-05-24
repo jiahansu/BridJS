@@ -606,7 +606,7 @@ NativeFunction(NULL, returnType, argumentTypes),mpIsolate(isolate), mpCallbackOb
 
 }
 
-const char bridjs::CallbackWrapper::onCallback(DCCallback* cb, DCArgs* args, DCValue* result) {
+char bridjs::CallbackWrapper::onCallback(DCCallback* cb, DCArgs* args, DCValue* result) {
     try {
         uv_mutex_lock(&mMutex);
 

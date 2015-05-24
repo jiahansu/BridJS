@@ -114,9 +114,9 @@ namespace bridjs {
 
         //DCCallVM* getVM() const;
         void* getSymbol() const;
-        const char getReturnType() const;
-        const char getArgumentType(const uint32_t index) const;
-        const size_t getArgumentLength() const;
+        char getReturnType() const;
+        char getArgumentType(const uint32_t index) const;
+        size_t getArgumentLength() const;
     protected:
         static v8::Persistent<v8::Function> constructor;
         //DCCallVM *mpVm;

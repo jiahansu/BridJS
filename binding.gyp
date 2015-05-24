@@ -59,9 +59,20 @@
                         ]
                       } ],
             ]
-        }]
+        }],
+        ['OS=="mac"', {
+                        'libraries': [
+                            '../deps/dyncall-0.8/darwin/libdyncall_s.a',
+                            '../deps/dyncall-0.8/darwin/libdyncallback_s.a',
+                            '../deps/dyncall-0.8/darwin/libdynload_s.a',
+                        ],
+                        'xcode_settings': {
+                        'OTHER_CFLAGS': [
+                            "-std=c++11", "-stdlib=libc++", "-O3", "-fexceptions", "-fPIC", "-mmacosx-version-min=10.9"
+                      ]},                
+      },]
       ],
-      "cflags": ["-std=c++11", "-O3", "-s", "-fPIC"],
+      "cflags": ["-std=c++11","-O3", "-s", "-fPIC"],
       "cflags_cc": ["-std=c++11", "-O3", "-s", "-fexceptions", "-fPIC"]
     }
   ]

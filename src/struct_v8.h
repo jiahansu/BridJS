@@ -58,19 +58,19 @@ public:
 	static void GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args);
 	static void GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args);
 	static void ToString(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static Struct* New(v8::Isolate* pIsolate,const std::vector<char> &fieldType,std::map<uint32_t,v8::Local<v8::Object>> &subStructMap);
+	static Struct* New(v8::Isolate* pIsolate,const std::vector<char> &fieldType,std::map<uint32_t,v8::Local<v8::Object> > &subStructMap);
 
 	//DCCallVM* getVM() const;
-	static const size_t getAlignSize(size_t size, size_t alignment);
-	static const size_t getFieldsSize(const std::vector<char> &fieldTypes, const size_t alignment=DEFAULT_ALIGNMENT);
-	static const size_t getAlignmentSize(const char type,const size_t typeSize, const bool isFirst);
-	static const size_t addPadding(size_t calculatedSize, const size_t alignment);
+	static size_t getAlignSize(size_t size, size_t alignment);
+	static size_t getFieldsSize(const std::vector<char> &fieldTypes, const size_t alignment=DEFAULT_ALIGNMENT);
+	static size_t getAlignmentSize(const char type,const size_t typeSize, const bool isFirst);
+	static size_t addPadding(size_t calculatedSize, const size_t alignment);
 
-	virtual const char getFieldType(const uint32_t index) const ;
-	virtual const size_t getFieldCount() const;
+	virtual char getFieldType(const uint32_t index) const ;
+	virtual size_t getFieldCount() const;
 	virtual std::shared_ptr<void> getField(const uint32_t index, const void* ptr) const;
 	virtual void setField(const uint32_t index, std::shared_ptr<void> pValue, void* ptr);
-	const size_t getSize() const;
+	size_t getSize() const;
 	virtual std::string getSignature();
 	std::string toString();
 protected:
@@ -83,7 +83,7 @@ protected:
 
 	Struct(v8::Isolate* pIsolate,const std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap,const size_t alignment);
 	virtual void checkRange(const uint32_t index) const;
-	const size_t deriveLayout(const size_t alignment);
+	size_t deriveLayout(const size_t alignment);
 	Struct* getSubStruct(uint32_t index);
 	virtual size_t getFieldOffset(uint32_t index) const;
 	size_t getAlignment() const;

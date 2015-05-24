@@ -345,6 +345,7 @@ var lib;
             
             
             testStruct = new TestStruct();
+            log.info("TestStruct size: "+bridjs.sizeof(testStruct));
             testStruct.x = testStruct.y = testStruct.z = testStruct.w = 2;
             testStruct.e = 2.5;
             assert(testStruct.x === 2, "Struct's get/set property fail");

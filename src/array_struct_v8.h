@@ -57,8 +57,8 @@ namespace bridjs {
         static ArrayStruct* New(v8::Isolate *isolate,const char type, const size_t length, const size_t alignment = DEFAULT_ALIGNMENT);
         
         //DCCallVM* getVM() const;
-        virtual const char getFieldType(const uint32_t index) const;
-        virtual const size_t getFieldCount() const;
+        virtual char getFieldType(const uint32_t index) const;
+        virtual size_t getFieldCount() const;
         virtual std::string getSignature();
     protected:
         char mType;
@@ -70,7 +70,7 @@ namespace bridjs {
         
         ArrayStruct(v8::Isolate *isolate,const char type, const size_t length, const size_t aligment = DEFAULT_ALIGNMENT);
         virtual void checkRange(const uint32_t index) const;
-        const size_t deriveArrayLayout(const size_t alignment);
+        size_t deriveArrayLayout(const size_t alignment);
         virtual size_t getFieldOffset(uint32_t index) const;
         virtual ~ArrayStruct();
 
