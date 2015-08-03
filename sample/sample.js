@@ -44,11 +44,11 @@ var bridjs = require('../lib/bridjs.js'), Signature = bridjs.Signature,
  } TestStruct;
  */
 var TestStruct = bridjs.defineStruct({
-    x: bridjs.structField(Signature.int16, 0),
-    y: bridjs.structField(Signature.int32, 1),
-    z: bridjs.structField(Signature.long, 2),
-    w: bridjs.structField(Signature.longlong, 3),
-    e: bridjs.structField(Signature.double, 4)
+    x: {type: "int16", order: 0},
+    y: {type: "int32", order: 1},
+    z: {type: "long", order: 2},
+    w: {type: "longlong", order: 3},
+    e: {type: "double", order: 4}
 });
 /*
 typedef struct{
@@ -57,8 +57,8 @@ typedef struct{
 } Point2d;
 */
 var Point2d = bridjs.defineStruct({
-    x : bridjs.structField(Signature.double, 0),
-    y : bridjs.structField(Signature.double, 1)
+    x : {type: "double", order: 0},
+    y : {type: "double", order: 1}
 });
 /*
 typedef struct{
@@ -68,9 +68,9 @@ typedef struct{
 } Point3d;
  */        
 var Point3d = bridjs.defineStruct({
-    x : bridjs.structField(Signature.double,0),
-    y : bridjs.structField(Signature.double,1),
-    z : bridjs.structField(Signature.double,2)
+    x : {type: "double", order: 0},
+    y : {type: "double", order: 1},
+    z : {type: "double", order: 2}
 });
 /*
 typedef struct{
@@ -84,18 +84,22 @@ typedef struct{
 } TestComplexStruct; 
  */
 var TestComplexStruct = bridjs.defineStruct({
-    w:bridjs.structField(Signature.CHAR_TYPE,0),
-    subStruct:bridjs.structField(TestStruct,1),
-    x:bridjs.structField(Signature.INT16_TYPE,2),
-    point2d:bridjs.structField(Point2d,3),
-    y:bridjs.structField(Signature.INT32_TYPE,4),
-    point3d:bridjs.structField(Point3d,5),
-    z:bridjs.structField(Signature.INT64_TYPE,6)
+    w:{type: "char", order: 0},
+    subStruct:{type: TestStruct, order: 1},
+    x:{type: "int16", order: 2},
+    point2d:{type: Point2d, order: 3},
+    y:{type: "int32", order: 4},
+    point3d:{type: Point3d, order: 5},
+    z:{type: "int64", order: 6}
 });
 
-var callbackFunctionDefine = bridjs.defineFunction(Signature.double, 
-    Signature.int16, Signature.int32, Signature.long, Signature.longlong, 
-    Signature.double);
+var TestArrayStruct = bridjs.defineStruct( {
+    w: {type: "char", order: 0},
+    first: {type: "char[3]", order: 1},
+    second: {type: "char[3]", order: 2}
+});
+
+var callbackFunctionDefine = bridjs.defineFunction("double (int16_t, int32_t, long, longlong, double)");
 
 var callback = bridjs.newCallback(callbackFunctionDefine, function(w, x, y, z, e) {
         console.log("Callback function was invoked");
@@ -103,31 +107,37 @@ var callback = bridjs.newCallback(callbackFunctionDefine, function(w, x, y, z, e
         return w*x*y*z*e;
 });
 
+var structCallback = bridjs.newCallback(bridjs.defineFunction("double (TestStruct* pTestStruct)", {TestStruct: TestStruct}), function (testStructArg) {
+    //log.info(testStructArg.e);
+    assert(testStructArg.e === testStruct.e, "Fail to call testerInstance.testStructCallbackFunction");
+
+    return testStructArg.w * testStructArg.x * testStructArg.y * testStructArg.z * testStructArg.e;
+});
+
 var NativeModule = bridjs.defineModule({
     /*double testMultiplyFunction(const int16_t w, const int32_t x,const long y, const LONGLONG z, const double e)*/
-    testMultiply: bridjs.defineFunction(Signature.double, Signature.int16, Signature.int32,
-            Signature.long, Signature.longlong, Signature.double).bind("testMultiplyFunction"),
+    testMultiply: bridjs.defineFunction("double testMultiplyFunction(int16_t,int32_t ,long ,longlong , double)"),
             
     /*double testStructFunction(const TestStruct* pTestStruct)*/
-    testStructFunction: bridjs.defineFunction(Signature.double, Signature.pointer),
+    testStructFunction: bridjs.defineFunction("double testStructFunction(TestStruct *pTestStruct)", {TestStruct:TestStruct}),
     
     /*double testComplexStructFunction(const TestComplexStruct* pTestStruct)*/
-    testComplexStructFunction: bridjs.defineFunction(Signature.double, Signature.pointer),
+    testComplexStructFunction: bridjs.defineFunction("double testComplexStructFunction(const TestComplexStruct* pTestStruct)",  {TestComplexStruct:TestComplexStruct}),
     
     /*double testArrayStructFunction(const TestArrayStruct* pTestStruct)*/
-    testArrayStructFunction: bridjs.defineFunction(Signature.double, callbackFunctionDefine),
+    testArrayStructFunction: bridjs.defineFunction("double testArrayStructFunction(TestArrayStruct* pTestStruct)", {TestArrayStruct:TestArrayStruct}),
     
     /*void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction);*/
-    testAsyncCallbackFunction: bridjs.defineFunction(Signature.void, Signature.pointer),
+    testAsyncCallbackFunction: bridjs.defineFunction("void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction)", {MultiplyCallbackFunction:callback}),
     
     /*const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)*/
-    testStructPassByPointerFunction: bridjs.defineFunction(bridjs.byPointer(TestStruct), Signature.pointer),
+    testStructPassByPointerFunction: bridjs.defineFunction("TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}),
     
     /*void testStructCallbackFunction(const TestStruct* pTestStruct,TestStructCallbackFunction callbackFunction)*/
-    testStructCallbackFunction: bridjs.defineFunction(Signature.void, bridjs.byPointer(TestStruct), Signature.pointer),
+    testStructCallbackFunction: bridjs.defineFunction("void testStructCallbackFunction(TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:structCallback}),
     
     /*const double* testValuePassByPointerFunction(const double *returnValue)*/
-    testValuePassByPointerFunction: bridjs.defineFunction(bridjs.byPointer(bridjs.NativeValue.double), bridjs.byPointer(bridjs.NativeValue.double))
+    testValuePassByPointerFunction: bridjs.defineFunction("double* testValuePassByPointerFunction(const double *returnValue)")
 }, libPath);
 
 nativeModule = new NativeModule();
