@@ -39,11 +39,10 @@ double testMultiplyFunction(const int16_t w, const int32_t x,const long y, const
 
 You can define JavaScript prototype like this:
 ``` bash
-var bridjs = require('bridjs'), Sig = bridjs.Signature;
+var bridjs = require('bridjs');
 
 var NativeModule = bridjs.defineModule({
-    testMultiplyFunction:  bridjs.defineFunction(Sig.double, Sig.int16, Sig.int32,
-            Sig.long, Sig.longlong, Sig.double)
+    testMultiplyFunction:  bridjs.defineFunction("double testMultiplyFunction(int16_t,int32_t ,long ,longlong , double)")
     }, libraryPath);
     
 var nativeModule = new NativeModule();
@@ -54,7 +53,8 @@ Bind C function API
 ``` bash
 bridjs.defineModule({
   functionName1: bridjs.DefineFunction(returnType, arg0Type, arg2Type...),
-  functionName2: bridjs.DefineFunction(returnType, arg0Type, arg2Type...),
+  //Or
+  functionName2: bridjs.DefineFunction("function declaration in C"),
   ...
 },libraryFile);
 ``` 
@@ -79,20 +79,19 @@ double testComplexStructFunction(const ComplexStruct* pTestStruct)
 You can define JavaScript prototype like this:
 ``` bash
 var Point3d = bridjs.defineStruct({
-    x : bridjs.structField(Sig.double,0),
-    y : bridjs.structField(Sig.double,1),
-    z : bridjs.structField(Sig.double,2)
+    x : {type: "double", order: 0},
+    y : {type: "double", order: 1},
+    z : {type: "double", order: 2}
 });
 
 var ComplexStruct = bridjs.defineStruct({
-    x : bridjs.structField(Sig.char,0),
-    y : bridjs.structField(Point3d,1),
-    str : bridjs.structArrayField(Sig.char,10,2)
+    x:{type: "char", order: 0},
+    y:{type: Point3d, order: 1},
+    z:{type: "char[10]", order: 2}
 });
 
 var NativeModule = bridjs.defineModule({
-    testComplexStructFunction : bridjs.defineFunction(Sig.double, bridjs.byPointer(ComplexStruct))
-    }, libraryPath);
+    testComplexStructFunction : bridjs.defineFunction("double testComplexStructFunction(ComplexStruct*)"}, libraryPath);
 
 var complexStruct = new ComplexStruct();
 var nativeModule = new NativeModule();
@@ -108,7 +107,8 @@ Bind C struct API
 ``` bash
 bridjs.defineStruct({
     element1 : bridjs.structField(elementType,order),
-    element2 : bridjs.structField(elementType,order),
+    //Or
+    element2 : {type: "<elementType>", order: <order>},
     element3 : bridjs.structArrayField(arrayType,arrayLength,order)
     ...
 });
@@ -134,9 +134,7 @@ void testCallbackFunction(MultiplyCallbackFunction callbackFunction);
 ```
 You can define JavaScript prototype like this:
 ``` bash
-var callbackFunctionDefine = bridjs.defineFunction(Signature.double, 
-    Signature.int16, Signature.int32, Signature.long, Signature.longlong, 
-    Signature.double);
+var callbackFunctionDefine = bridjs.defineFunction("double (int16_t, int32_t, long, longlong, double)");
 
 var callback = bridjs.newCallback(callbackFunctionDefine, function(w, x, y, z, e) {
         console.log("Callback function was invoked");
@@ -165,7 +163,7 @@ const double* testValuePassByPointerFunction(const double *returnValue);
 You can define JavaScript prototype like this:
 ``` bash
 var NativeModule = bridjs.defineModule({
-    testValuePassByPointerFunction:  bridjs.defineFunction(bridjs.byPointer(Sig.double), bridjs.byPointer(Sig.double))
+    testValuePassByPointerFunction:  bridjs.defineFunction("double* testValuePassByPointerFunction(double*)")
     }, libraryPath);
 
 var nativeDouble = new bridjs.NativeValue.double(2.5);  
