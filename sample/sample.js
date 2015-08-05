@@ -98,6 +98,7 @@ var TestArrayStruct = bridjs.defineStruct( {
     first: {type: "char[3]", order: 1},
     second: {type: "char[3]", order: 2}
 });
+var TestStructCallbackFunction = bridjs.defineFunction("double (TestStruct* pTestStruct)", {TestStruct: TestStruct});
 
 var callbackFunctionDefine = bridjs.defineFunction("double (int16_t, int32_t, long, longlong, double)");
 
@@ -107,7 +108,7 @@ var callback = bridjs.newCallback(callbackFunctionDefine, function(w, x, y, z, e
         return w*x*y*z*e;
 });
 
-var structCallback = bridjs.newCallback(bridjs.defineFunction("double (TestStruct* pTestStruct)", {TestStruct: TestStruct}), function (testStructArg) {
+var structCallback = bridjs.newCallback(TestStructCallbackFunction, function (testStructArg) {
     //log.info(testStructArg.e);
     assert(testStructArg.e === testStruct.e, "Fail to call testerInstance.testStructCallbackFunction");
 
@@ -122,19 +123,19 @@ var NativeModule = bridjs.defineModule({
     testStructFunction: bridjs.defineFunction("double testStructFunction(TestStruct *pTestStruct)", {TestStruct:TestStruct}),
     
     /*double testComplexStructFunction(const TestComplexStruct* pTestStruct)*/
-    testComplexStructFunction: bridjs.defineFunction("double testComplexStructFunction(const TestComplexStruct* pTestStruct)",  {TestComplexStruct:TestComplexStruct}),
+    testComplexStructFunction: bridjs.defineFunction("double testComplexStructFunction(TestComplexStruct*)",  {TestComplexStruct:TestComplexStruct}),
     
     /*double testArrayStructFunction(const TestArrayStruct* pTestStruct)*/
     testArrayStructFunction: bridjs.defineFunction("double testArrayStructFunction(TestArrayStruct* pTestStruct)", {TestArrayStruct:TestArrayStruct}),
     
     /*void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction);*/
-    testAsyncCallbackFunction: bridjs.defineFunction("void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction)", {MultiplyCallbackFunction:callback}),
+    testAsyncCallbackFunction: bridjs.defineFunction("void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction)", {MultiplyCallbackFunction:callbackFunctionDefine}),
     
     /*const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)*/
     testStructPassByPointerFunction: bridjs.defineFunction("TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}),
     
     /*void testStructCallbackFunction(const TestStruct* pTestStruct,TestStructCallbackFunction callbackFunction)*/
-    testStructCallbackFunction: bridjs.defineFunction("void testStructCallbackFunction(TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:structCallback}),
+    testStructCallbackFunction: bridjs.defineFunction("void testStructCallbackFunction(TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:TestStructCallbackFunction}),
     
     /*const double* testValuePassByPointerFunction(const double *returnValue)*/
     testValuePassByPointerFunction: bridjs.defineFunction("double* testValuePassByPointerFunction(const double *returnValue)")

@@ -49,7 +49,7 @@ var lib;
 
 {/*Test compiler*/
     var returnInfo = {};
-    log.info(Compiler.compileFunction("double testMultiplyFunction(const int16_t w, int32_t x, long, const long* z, const double **e)",null,returnInfo), ", name", returnInfo);
+    log.info(Compiler.compileFunction("int (ELCALLBACK *getExButtonStates)(int *)",null,returnInfo), ", name", returnInfo);
 }
 
 {/*Test dyncall block*/
@@ -254,7 +254,7 @@ var lib;
 
             var Tester, testerInstance, TestStruct, testStruct, TestComplexStruct, Point2d,Point3d, 
                 testComplexStruct, point3d, TestArrayStruct, testArrayStruct, callback, testStruct2, 
-                HugeArrayStruct, structCallback, 
+                HugeArrayStruct, structCallback,TestStructCallbackFunction, 
                 DoubleValue = bridjs.NativeValue.double, 
                 doubleValue, testString = "test_string", strBuffer1 = new Buffer(256)
                 , strBuffer2 = new Buffer(256), size;
@@ -310,8 +310,8 @@ var lib;
             callback = bridjs.newCallback(bridjs.defineFunction("double (*abc)(const int16_t w, const int32_t x, const long y, const longlong z, const double e)"), function(w, x, y, z, e) {
                 return w * x * y * z * e;
             });
-            
-            structCallback  = bridjs.newCallback(bridjs.defineFunction("double TestStructCallbackFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}), function(testStructArg) {
+            TestStructCallbackFunction = bridjs.defineFunction("double TestStructCallbackFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct});
+            structCallback  = bridjs.newCallback(TestStructCallbackFunction , function(testStructArg) {
                 //log.info(testStructArg.e);
                 assert(testStructArg.e === testStruct.e ,"Fail to call testerInstance.testStructCallbackFunction");
                 
@@ -327,7 +327,7 @@ var lib;
                 testAsyncCallbackFunction : bridjs.defineFunction("void testAsyncCallbackFunction(MultiplyCallbackFunction callbackFunction)", {MultiplyCallbackFunction:callback}),
                 testStructPassByPointerFunction:bridjs.defineFunction("const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}).cacheInstance(false),
                 testStructPassByPointerFunctionWithCacheInstance:bridjs.defineFunction("const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}).bind("testStructPassByPointerFunction").cacheInstance(true),
-                testStructCallbackFunction:bridjs.defineFunction("void testStructCallbackFunction(const TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:structCallback}),
+                testStructCallbackFunction:bridjs.defineFunction("void testStructCallbackFunction(const TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:TestStructCallbackFunction}),
                 testValuePassByPointerFunction:bridjs.defineFunction("const double* testValuePassByPointerFunction(const double *returnValue)")
             }, libPath);
 
