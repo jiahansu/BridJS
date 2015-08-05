@@ -143,7 +143,7 @@ var callback = bridjs.newCallback(callbackFunctionDefine, function(w, x, y, z, e
 });
 
 var NativeModule = bridjs.defineModule({
-    testCallbackFunction : bridjs.defineFunction(Sig.void, callbackFunctionDefine)
+    testCallbackFunction : bridjs.defineFunction("void testCallbackFunction(MultiplyCallbackFunction callbackFunction)", {MultiplyCallbackFunction:callbackFunctionDefine})
     }, libraryPath);
 
 var nativeModule = new NativeModule();
