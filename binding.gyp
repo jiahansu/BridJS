@@ -11,6 +11,7 @@
         'src/native_function_v8.cc',
         'src/pointer_v8.cc',
         'src/struct_v8.cc',
+        'src/union_struct_v8.cc',
         'src/dyncallback_v8.cc',
         'src/bridjs_module.cc',
         'src/test.cc',

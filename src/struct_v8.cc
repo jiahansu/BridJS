@@ -325,6 +325,45 @@ bridjs::Struct* bridjs::Struct::New(v8::Isolate* pIsolate, const std::vector<cha
     return new bridjs::Struct(pIsolate,fieldTypes, subStructMap, DEFAULT_ALIGNMENT);
 }
 
+void bridjs::Struct::parseJSArguments(v8::Isolate* isolate,const v8::FunctionCallbackInfo<v8::Value>& args,
+        std::vector<char> &argumentTypes, 
+        std::map<uint32_t,v8::Local<v8::Object>> &subStructMap){
+    
+    v8::Local<v8::Value> value;
+    char type;
+
+    if (args[0]->IsArray()) {
+        v8::Local<v8::Array> array = v8::Local<v8::Array>::Cast(args[0]);
+
+        for (uint32_t i = 0; i < array->Length(); ++i) {
+            value = array->Get(i);
+
+            if (value->IsObject() && !value->IsString()) {
+                type = DC_SIGCHAR_STRUCT;
+                subStructMap[i] = value->ToObject();
+            } else {
+                GET_CHAR_VALUE(tempType, value, i);
+                type = tempType;
+            }
+
+            argumentTypes.push_back(type);
+        }
+    } else {
+        for (int32_t i = 0; i < args.Length(); ++i) {
+            value = args[i];
+
+            if (value->IsObject() && !value->IsString()) {
+                type = DC_SIGCHAR_STRUCT;
+                subStructMap[i] = value->ToObject();
+            } else {
+                GET_CHAR_VALUE(tempType, value, i);
+                type = tempType;
+            }
+            argumentTypes.push_back(type);
+        }
+    }
+}
+
 void bridjs::Struct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
@@ -333,40 +372,9 @@ void bridjs::Struct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
             std::vector<char> argumentTypes;
             size_t alignment = DEFAULT_ALIGNMENT;
             std::map<uint32_t, v8::Local < v8::Object >> subStructMap;
-            v8::Local<v8::Value> value;
-            char type;
             Struct* obj;
 
-            if (args[0]->IsArray()) {
-                v8::Local<v8::Array> array = v8::Local<v8::Array>::Cast(args[0]);
-
-                for (uint32_t i = 0; i < array->Length(); ++i) {
-                    value = array->Get(i);
-
-                    if (value->IsObject() && !value->IsString()) {
-                        type = DC_SIGCHAR_STRUCT;
-                        subStructMap[i] = value->ToObject();
-                    } else {
-                        GET_CHAR_VALUE(tempType, value, i);
-                        type = tempType;
-                    }
-
-                    argumentTypes.push_back(type);
-                }
-            } else {
-                for (int32_t i = 0; i < args.Length(); ++i) {
-                    value = args[i];
-
-                    if (value->IsObject() && !value->IsString()) {
-                        type = DC_SIGCHAR_STRUCT;
-                        subStructMap[i] = value->ToObject();
-                    } else {
-                        GET_CHAR_VALUE(tempType, value, i);
-                        type = tempType;
-                    }
-                    argumentTypes.push_back(type);
-                }
-            }
+            parseJSArguments(isolate,args, argumentTypes, subStructMap);
 
 
             //buffer = std::shared_ptr<node::Buffer>(node::Buffer::New(getFieldsSize(argumentTypes,alignment)));
@@ -627,7 +635,7 @@ std::shared_ptr<void> bridjs::Struct::getField(const uint32_t index, const void*
         case DC_SIGCHAR_STRUCT:
         {
             std::stringstream message;
-            message << "bridjs should handle Struct type at JavaScript layer: " << index;
+            message << "BridJS should handle Struct type at JavaScript layer: " << index;
             throw std::runtime_error(message.str());
         }
             break;

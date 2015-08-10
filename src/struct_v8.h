@@ -59,13 +59,12 @@ public:
 	static void GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args);
 	static void ToString(const v8::FunctionCallbackInfo<v8::Value>& args);
 	static Struct* New(v8::Isolate* pIsolate,const std::vector<char> &fieldType,std::map<uint32_t,v8::Local<v8::Object> > &subStructMap);
-
 	//DCCallVM* getVM() const;
 	static size_t getAlignSize(size_t size, size_t alignment);
 	static size_t getFieldsSize(const std::vector<char> &fieldTypes, const size_t alignment=DEFAULT_ALIGNMENT);
 	static size_t getAlignmentSize(const char type,const size_t typeSize, const bool isFirst);
 	static size_t addPadding(size_t calculatedSize, const size_t alignment);
-
+        
 	virtual char getFieldType(const uint32_t index) const ;
 	virtual size_t getFieldCount() const;
 	virtual std::shared_ptr<void> getField(const uint32_t index, const void* ptr) const;
@@ -80,7 +79,10 @@ protected:
 	std::vector<size_t> mOffsets;
 	size_t mSize;
 	size_t mAligment;
-
+        
+        static void   parseJSArguments(v8::Isolate* pIsolate,const v8::FunctionCallbackInfo<v8::Value>& args, 
+        std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap);
+        
 	Struct(v8::Isolate* pIsolate,const std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap,const size_t alignment);
 	virtual void checkRange(const uint32_t index) const;
 	size_t deriveLayout(const size_t alignment);

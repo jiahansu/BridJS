@@ -97,7 +97,9 @@ extern "C" {
     }
 
     double testComplexStructFunction(const TestComplexStruct* pTestStruct) {
-        return pTestStruct->w * pTestStruct->x * pTestStruct->y * pTestStruct->z * pTestStruct->point2d.x * pTestStruct->point3d.y * pTestStruct->subStruct.e;
+        return pTestStruct->w * pTestStruct->x * pTestStruct->y * pTestStruct->z * 
+               pTestStruct->point2d.x * pTestStruct->point3d.y * pTestStruct->subStruct.e 
+               * pTestStruct->unionValue.x;
     }
 
     double testArrayStructFunction(const TestArrayStruct* pTestStruct) {
@@ -121,5 +123,10 @@ extern "C" {
     const char* testStringFunction(const char* pTestString){
         //std::cout<<"testStringFunction "<<pTestString<<std::endl;
         return pTestString;
+    }
+    
+    double testUnionValueFunction(const UnionValue *pUnionValue){
+        //std::cout <<"Pointer: "<<pUnionValue<< ", testUnionValueFunction: " << pUnionValue->x << std::endl;
+        return pUnionValue->x;
     }
 }

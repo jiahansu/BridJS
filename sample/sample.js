@@ -72,25 +72,22 @@ var Point3d = bridjs.defineStruct({
     y : {type: "double", order: 1},
     z : {type: "double", order: 2}
 });
-/*
-typedef struct{
-    char w;
-    TestStruct subStruct;
-    int16_t x;
-    Point2d point2d;
-    int32_t y;
-    Point3d point3d;
-    int64_t z;
-} TestComplexStruct; 
- */
+
+var UnionValue = bridjs.defineUnion({
+    x: {type: "double", order: 0},
+    y: {type: "char", order: 1},
+    z: {type: "int32_t", order: 2}
+});
+
 var TestComplexStruct = bridjs.defineStruct({
     w:{type: "char", order: 0},
     subStruct:{type: TestStruct, order: 1},
-    x:{type: "int16", order: 2},
-    point2d:{type: Point2d, order: 3},
-    y:{type: "int32", order: 4},
-    point3d:{type: Point3d, order: 5},
-    z:{type: "int64", order: 6}
+    unionValue: {type: UnionValue, order: 2},
+    x:{type: "int16", order: 3},
+    point2d:{type: Point2d, order: 4},
+    y:{type: "int32", order: 5},
+    point3d:{type: Point3d, order: 6},
+    z:{type: "int64", order: 7}
 });
 
 var TestArrayStruct = bridjs.defineStruct( {
@@ -98,6 +95,7 @@ var TestArrayStruct = bridjs.defineStruct( {
     first: {type: "char[3]", order: 1},
     second: {type: "char[3]", order: 2}
 });
+
 var TestStructCallbackFunction = bridjs.defineFunction("double (TestStruct* pTestStruct)", {TestStruct: TestStruct});
 
 var callbackFunctionDefine = bridjs.defineFunction("double (int16_t, int32_t, long, longlong, double)");

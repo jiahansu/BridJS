@@ -102,17 +102,24 @@ extern "C" {
         Point2d point2d;
         int32_t y;
     } TempStruct2;
-
+    
+    typedef union{
+        double  x;
+        char    y;
+        int32_t z;
+    }UnionValue;
+    
     typedef struct {
         char w;
         TestStruct subStruct;
+        UnionValue unionValue;
         int16_t x;
         Point2d point2d;
         int32_t y;
         Point3d point3d;
         int64_t z;
     } TestComplexStruct;
-
+    
     typedef double (*MultiplyCallbackFunction)(const int16_t w, const int32_t x, const long y, const DClonglong z, const double e);
     typedef double (*TestStructCallbackFunction)(const TestStruct* pTestStruct);
 

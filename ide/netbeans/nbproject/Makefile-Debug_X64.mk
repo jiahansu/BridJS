@@ -44,7 +44,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/1445274692/native_function_v8.o \
 	${OBJECTDIR}/_ext/1445274692/pointer_v8.o \
 	${OBJECTDIR}/_ext/1445274692/struct_v8.o \
-	${OBJECTDIR}/_ext/1445274692/test.o
+	${OBJECTDIR}/_ext/1445274692/test.o \
+	${OBJECTDIR}/_ext/1445274692/union_struct_v8.o
 
 
 # C Compiler Flags
@@ -65,17 +66,17 @@ LDLIBSOPTIONS=../../deps/dyncall-0.8/linux_x64/libdyncall_s.a ../../deps/dyncall
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/../../../linux_x64/bridjs.node
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/../../../build/Release/bridjs.node
 
-${CND_DISTDIR}/../../../linux_x64/bridjs.node: ../../deps/dyncall-0.8/linux_x64/libdyncall_s.a
+${CND_DISTDIR}/../../../build/Release/bridjs.node: ../../deps/dyncall-0.8/linux_x64/libdyncall_s.a
 
-${CND_DISTDIR}/../../../linux_x64/bridjs.node: ../../deps/dyncall-0.8/linux_x64/libdyncallback_s.a
+${CND_DISTDIR}/../../../build/Release/bridjs.node: ../../deps/dyncall-0.8/linux_x64/libdyncallback_s.a
 
-${CND_DISTDIR}/../../../linux_x64/bridjs.node: ../../deps/dyncall-0.8/linux_x64/libdynload_s.a
+${CND_DISTDIR}/../../../build/Release/bridjs.node: ../../deps/dyncall-0.8/linux_x64/libdynload_s.a
 
-${CND_DISTDIR}/../../../linux_x64/bridjs.node: ${OBJECTFILES}
-	${MKDIR} -p ${CND_DISTDIR}/../../../linux_x64
-	${LINK.cc} -o ${CND_DISTDIR}/../../../linux_x64/bridjs.node ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
+${CND_DISTDIR}/../../../build/Release/bridjs.node: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/../../../build/Release
+	${LINK.cc} -o ${CND_DISTDIR}/../../../build/Release/bridjs.node ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
 
 ${OBJECTDIR}/_ext/1445274692/array_struct_v8.o: ../../src/array_struct_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
@@ -127,13 +128,18 @@ ${OBJECTDIR}/_ext/1445274692/test.o: ../../src/test.cc
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/test.o ../../src/test.cc
 
+${OBJECTDIR}/_ext/1445274692/union_struct_v8.o: ../../src/union_struct_v8.cc 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/union_struct_v8.o ../../src/union_struct_v8.cc
+
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/../../../linux_x64/bridjs.node
+	${RM} ${CND_DISTDIR}/../../../build/Release/bridjs.node
 
 # Subprojects
 .clean-subprojects:

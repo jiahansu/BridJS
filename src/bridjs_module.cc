@@ -39,6 +39,7 @@
 #include "struct_v8.h"
 #include "test.h"
 #include "array_struct_v8.h"
+#include "union_struct_v8.h"
 
 #include <iostream>
 #include <node.h>
@@ -278,7 +279,7 @@ void init(Handle<Object> target) {
     bridjs::NativeFunction::Init(dyncallObj);
     bridjs::Struct::Init(dyncallObj);
     bridjs::ArrayStruct::Init(dyncallObj);
-
+    bridjs::UnionStruct::Init(dyncallObj);
     /*dyncallback*/
     target->ForceSet(v8::String::NewFromUtf8(isolate,"dcb", v8::String::kInternalizedString), dyncallBackObj, ReadOnly);
     bridjs::Dyncallback::Init(dyncallBackObj);

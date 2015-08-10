@@ -255,7 +255,7 @@ var lib;
             var Tester, testerInstance, TestStruct, testStruct, TestComplexStruct, Point2d,Point3d, 
                 testComplexStruct, point3d, TestArrayStruct, testArrayStruct, callback, testStruct2, 
                 HugeArrayStruct, structCallback,TestStructCallbackFunction, 
-                DoubleValue = bridjs.NativeValue.double, 
+                DoubleValue = bridjs.NativeValue.double, UnionValue, unionValueInstance ,
                 doubleValue, testString = "test_string", strBuffer1 = new Buffer(256)
                 , strBuffer2 = new Buffer(256), size;
 
@@ -266,6 +266,12 @@ var lib;
                 z : {type: "long",order: 2},
                 w : {type: "longlong",order: 3},
                 e : {type: "double",order: 4}
+            });
+            
+            UnionValue = bridjs.defineUnion({
+                x : {type:"double", order:0},
+                y : {type:"char", order:1},
+                z : {type: "int32_t", order:2}
             });
             
             Point2d = my.Class(bridjs.Struct,{
@@ -290,11 +296,12 @@ var lib;
                 },
                 w:bridjs.structField(Signature.CHAR_TYPE,0),
 		subStruct:bridjs.structField(TestStruct,1),
-		x:bridjs.structField(Signature.INT16_TYPE,2),
-		point2d:bridjs.structField(Point2d,3),
-		y:bridjs.structField(Signature.INT32_TYPE,4),
-		point3d:bridjs.structField(Point3d,5),
-		z:bridjs.structField(Signature.INT64_TYPE,6)
+                unionValue:{type:UnionValue, order:2},
+		x:bridjs.structField(Signature.INT16_TYPE,3),
+		point2d:bridjs.structField(Point2d,4),
+		y:bridjs.structField(Signature.INT32_TYPE,5),
+		point3d:bridjs.structField(Point3d,6),
+		z:bridjs.structField(Signature.INT64_TYPE,7)
             });
             
             TestArrayStruct = my.Class(bridjs.Struct,{
@@ -306,6 +313,9 @@ var lib;
                 second:bridjs.structArrayField(Signature.CHAR_TYPE,3,2)
             });
             
+            unionValueInstance = new UnionValue();
+            
+            log.info("Union size: ", bridjs.sizeof(UnionValue));
             
             callback = bridjs.newCallback(bridjs.defineFunction("double (*abc)(const int16_t w, const int32_t x, const long y, const longlong z, const double e)"), function(w, x, y, z, e) {
                 return w * x * y * z * e;
@@ -328,9 +338,10 @@ var lib;
                 testStructPassByPointerFunction:bridjs.defineFunction("const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}).cacheInstance(false),
                 testStructPassByPointerFunctionWithCacheInstance:bridjs.defineFunction("const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}).bind("testStructPassByPointerFunction").cacheInstance(true),
                 testStructCallbackFunction:bridjs.defineFunction("void testStructCallbackFunction(const TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:TestStructCallbackFunction}),
-                testValuePassByPointerFunction:bridjs.defineFunction("const double* testValuePassByPointerFunction(const double *returnValue)")
+                testValuePassByPointerFunction:bridjs.defineFunction("const double* testValuePassByPointerFunction(const double *returnValue)"),
+                testUnionValueFunction: bridjs.defineFunction("double testUnionValueFunction(const UnionValue *pUnionValue)", {UnionValue: UnionValue})
             }, libPath);
-
+            
             testerInstance = new Tester();
             //log.info("Register Tester.testMultiplyFunctio: "+testerInstance.testMultiplyFunction);
             startSeconds = Utils.timeSeconds();
@@ -359,7 +370,7 @@ var lib;
             
             log.info("HugeArrayStruct's size: "+bridjs.getTypeSize(HugeArrayStruct));
             
-            
+            log.info("Init TestStruct");
             testStruct = new TestStruct();
             log.info("TestStruct size: "+bridjs.sizeof(testStruct));
             testStruct.x = testStruct.y = testStruct.z = testStruct.w = 2;
@@ -377,13 +388,13 @@ var lib;
             ret = testComplexStruct.subStruct;
             assert((ret instanceof bridjs.Struct), "Fail to get sub-struct");
             
-            testComplexStruct.w = testComplexStruct.x = testComplexStruct.y = testComplexStruct.z = 2;
+            testComplexStruct.w = testComplexStruct.x = testComplexStruct.y = testComplexStruct.z = testComplexStruct.unionValue.x = 2;
             testComplexStruct.subStruct.e =  testComplexStruct.point2d.x = testComplexStruct.point3d.y = 2.5;
             ret = testComplexStruct.point3d.y;
             assert((ret === 2.5), "Fail to access sub-struct's element");
             
             ret = testerInstance.testComplexStructFunction(bridjs.getStructPointer(testComplexStruct));
-            assert((ret === 250), "Fail to call testerInstance.testComplexStructFunction");
+            assert((ret === 500), "Fail to call testerInstance.testComplexStructFunction");
             
             point3d = new Point3d();
             point3d.x = point3d.y = point3d.z = 3.5;
@@ -461,6 +472,15 @@ var lib;
             bridjs.utils.memoryCopy(strBuffer2, strBuffer1, size);
             //console.log(strBuffer2.toString("utf-8",0, size));
             assert(testString===strBuffer2.toString("utf-8",0, size), "Fail to call bridjs.utils.memcpy");
+            
+            unionValueInstance.y = 10;
+            unionValueInstance.z = 20;
+            unionValueInstance.x = 100;
+            
+            log.info("unionValueInstance.x = ",unionValueInstance.x);
+            
+            log.info("Union return value: ",testerInstance.testUnionValueFunction(bridjs.byPointer(unionValueInstance)));
+            assert(unionValueInstance.x === testerInstance.testUnionValueFunction(bridjs.byPointer(unionValueInstance)) ,"Fail to call testerInstance.testUnionValueFunction");
             /*
             assert(testString===testerInstance.testStringFunction(testString), 
             "Fail to call testerInstance.testStringFunction");*/
