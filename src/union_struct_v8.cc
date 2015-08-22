@@ -93,8 +93,6 @@ void bridjs::UnionStruct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
             std::vector<char> argumentTypes;
             size_t alignment = DEFAULT_ALIGNMENT;
             std::map<uint32_t, v8::Local < v8::Object >> subStructMap;
-            v8::Local<v8::Value> value;
-            char type;
             UnionStruct* obj;
 
             bridjs::Struct::parseJSArguments(isolate, args, argumentTypes,subStructMap);
