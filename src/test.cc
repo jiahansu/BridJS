@@ -129,4 +129,10 @@ extern "C" {
         //std::cout <<"Pointer: "<<pUnionValue<< ", testUnionValueFunction: " << pUnionValue->x << std::endl;
         return pUnionValue->x;
     }
+    
+    void testFillStringFunction(char* strBuffer, const uint32_t length){
+        const char* srcStr = "test fillStringFunction";
+        
+        strncpy(strBuffer,srcStr , length);
+    }
 }

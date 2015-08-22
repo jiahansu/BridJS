@@ -119,6 +119,7 @@ void pushArgs(v8::Isolate* isolate,DCCallVM *vm, const bridjs::NativeFunction *n
 
     for (uint32_t k = 0; k < length; ++k) {
         i = k + offset;
+        
         switch (nativeFunction->getArgumentType(k)) {
             case DC_SIGCHAR_BOOL:
             {
@@ -175,17 +176,25 @@ void pushArgs(v8::Isolate* isolate,DCCallVM *vm, const bridjs::NativeFunction *n
             break;
             case DC_SIGCHAR_STRING:
             {
-                GET_STRING_VALUE(val, args->get(i), i);
-                if ((*val)==NULL || val->IsNull()) {
-                    dcArgPointer(vm, NULL);
-                } else {
-                    std::shared_ptr<std::string> pString = 
-                            std::make_shared<std::string>(*v8::String::Utf8Value(val));
-                    //std::string string(*v8::String::Utf8Value(args->get(i)));
-                    pStringArgs->push_back(pString);
-                    //std::cout << "String: :" <<(*pString)<< std::endl;
-   
-                    dcArgPointer(vm, (void*) pString->c_str());
+                if(node::Buffer::HasInstance(args->get(i))){
+                    void* ptr = node::Buffer::Data(args->get(i));
+                    
+                    pPersistArgs->Set(i,args->get(i));
+                    dcArgPointer(vm, ptr);
+                }else{    
+                    GET_STRING_VALUE(val, args->get(i), i);
+                    
+                    if ((*val)==NULL || val->IsNull()) {
+                        dcArgPointer(vm, NULL);
+                    }else {
+                        std::shared_ptr<std::string> pString = 
+                                std::make_shared<std::string>(*v8::String::Utf8Value(val));
+                        //std::string string(*v8::String::Utf8Value(args->get(i)));
+                        pStringArgs->push_back(pString);
+                        //std::cout << "String: :" <<(*pString)<< std::endl;
+
+                        dcArgPointer(vm, (void*) pString->c_str());
+                    }
                 }
 
             }

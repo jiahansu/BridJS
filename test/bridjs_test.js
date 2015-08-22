@@ -339,7 +339,8 @@ var lib;
                 testStructPassByPointerFunctionWithCacheInstance:bridjs.defineFunction("const TestStruct* testStructPassByPointerFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct}).bind("testStructPassByPointerFunction").cacheInstance(true),
                 testStructCallbackFunction:bridjs.defineFunction("void testStructCallbackFunction(const TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction)", {TestStruct:TestStruct, TestStructCallbackFunction:TestStructCallbackFunction}),
                 testValuePassByPointerFunction:bridjs.defineFunction("const double* testValuePassByPointerFunction(const double *returnValue)"),
-                testUnionValueFunction: bridjs.defineFunction("double testUnionValueFunction(const UnionValue *pUnionValue)", {UnionValue: UnionValue})
+                testUnionValueFunction: bridjs.defineFunction("double testUnionValueFunction(const UnionValue *pUnionValue)", {UnionValue: UnionValue}),
+                testFillStringFunction: bridjs.defineFunction("void testFillStringFunction(char* strBuffer, const uint32_t length)")
             }, libPath);
             
             testerInstance = new Tester();
@@ -481,6 +482,11 @@ var lib;
             
             log.info("Union return value: ",testerInstance.testUnionValueFunction(bridjs.byPointer(unionValueInstance)));
             assert(unionValueInstance.x === testerInstance.testUnionValueFunction(bridjs.byPointer(unionValueInstance)) ,"Fail to call testerInstance.testUnionValueFunction");
+            
+            testerInstance.testFillStringFunction(strBuffer1, strBuffer1.length);
+            
+            log.info("testFillStringFunction: ",bridjs.toString(strBuffer1));
+            
             /*
             assert(testString===testerInstance.testStringFunction(testString), 
             "Fail to call testerInstance.testStringFunction");*/
