@@ -32,7 +32,7 @@
  */
 #include "test.h"
 #include "dyncall.h"
-
+#include <string.h>
 
 using namespace v8;
 
