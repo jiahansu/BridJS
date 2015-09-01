@@ -136,4 +136,5 @@ extern "C" {
     UV_EXTERN void testStructCallbackFunction(const TestStruct* pTestStruct, TestStructCallbackFunction callbackFunction);
     UV_EXTERN const double* testValuePassByPointerFunction(const double *returnValue);
     UV_EXTERN void testFillStringFunction(char* strBuffer, const uint32_t length);
+    UV_EXTERN double testUnionValueFunction(const UnionValue *pUnionValue);
 }
