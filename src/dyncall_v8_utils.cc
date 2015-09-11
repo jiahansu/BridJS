@@ -223,27 +223,25 @@ void bridjs::Utils::PointerToString(const v8::FunctionCallbackInfo<v8::Value>& a
 
 Local<Value> bridjs::Utils::wrapPointerToBuffer(Isolate* isolate, const void* ptr) {
     v8::EscapableHandleScope scope(isolate);
-    Handle<Value> result;
-
-    if (ptr != NULL) {
-        v8::Local<v8::Object> buf = node::Buffer::New(isolate, (char*) (&ptr), sizeof (void*));
-        result = scope.Escape(buf);
+    
+    if (ptr != NULL) { 
+        
+        v8::Local<v8::ArrayBuffer> ab = ArrayBuffer::New(isolate, sizeof(void*));
+        
+        std::memcpy(ab->GetContents().Data(), &ptr, sizeof(void*)); 
+    
+        return scope.Escape(ab);
     } else {
-        result = scope.Escape(v8::Local<Primitive>::New(isolate, v8::Null(isolate)));
+        return scope.Escape(v8::Local<Primitive>::New(isolate, v8::Null(isolate)));
     }
-
-    return result;
-
-	//memcpy(&pptr,node::Buffer::Data(buf), sizeof(void*));
-
-	
 }
 
 
 void* bridjs::Utils::unwrapBufferToPointer(v8::Local<v8::Value> value){
 	void* ptr;
-
-	memcpy(&ptr, node::Buffer::Data(value->ToObject()), sizeof(void*));
+        v8::Local<v8::ArrayBuffer> ab = value.As<v8::ArrayBuffer>();
+         
+	std::memcpy(&ptr, ab->GetContents().Data(), sizeof(void*));
 
 	return ptr;
 }

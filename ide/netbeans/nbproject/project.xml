@@ -23,6 +23,10 @@
                     <name>Release_X86</name>
                     <type>2</type>
                 </confElem>
+                <confElem>
+                    <name>Darwin_X64</name>
+                    <type>2</type>
+                </confElem>
             </confList>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>

@@ -342,7 +342,7 @@ var lib;
                 testUnionValueFunction: bridjs.defineFunction("double testUnionValueFunction(const UnionValue *pUnionValue)", {UnionValue: UnionValue}),
                 testFillStringFunction: bridjs.defineFunction("void testFillStringFunction(char* strBuffer, const uint32_t length)")
             }, libPath);
-            
+
             testerInstance = new Tester();
             //log.info("Register Tester.testMultiplyFunctio: "+testerInstance.testMultiplyFunction);
             startSeconds = Utils.timeSeconds();

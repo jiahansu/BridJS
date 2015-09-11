@@ -31,7 +31,7 @@ DEFAULTCONF=Debug_X64
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug_X64 Release_X64 Release_X86 
+ALLCONFS=Debug_X64 Release_X64 Release_X86 Darwin_X64 
 
 
 # build

@@ -145,7 +145,7 @@ console.log(nativeModule.testMultiply(2,2,2,2,2.5));
 
 var testComplexStruct = new TestComplexStruct();
 testComplexStruct.w = testComplexStruct.x = testComplexStruct.y = testComplexStruct.z = 2;
-testComplexStruct.subStruct.e =  testComplexStruct.point2d.x = testComplexStruct.point3d.y = 2.5;
+testComplexStruct.subStruct.e =  testComplexStruct.point2d.x = testComplexStruct.point3d.y = testComplexStruct.unionValue.x= 2.5;
 
 console.log(testComplexStruct.point3d.y);
 console.log(nativeModule.testComplexStructFunction(bridjs.byPointer(testComplexStruct)));

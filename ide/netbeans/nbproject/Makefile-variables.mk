@@ -30,6 +30,14 @@ CND_ARTIFACT_PATH_Release_X86=dist/../../../build/Release/bridjs.node
 CND_PACKAGE_DIR_Release_X86=dist/Release_X86/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release_X86=libnetbeans.so.tar
 CND_PACKAGE_PATH_Release_X86=dist/Release_X86/GNU-Linux-x86/package/libnetbeans.so.tar
+# Darwin_X64 configuration
+CND_PLATFORM_Darwin_X64=GNU-MacOSX
+CND_ARTIFACT_DIR_Darwin_X64=dist/../../../build/Release
+CND_ARTIFACT_NAME_Darwin_X64=bridjs.node
+CND_ARTIFACT_PATH_Darwin_X64=dist/../../../build/Release/bridjs.node
+CND_PACKAGE_DIR_Darwin_X64=dist/Darwin_X64/GNU-MacOSX/package
+CND_PACKAGE_NAME_Darwin_X64=libnetbeans.dylib.tar
+CND_PACKAGE_PATH_Darwin_X64=dist/Darwin_X64/GNU-MacOSX/package/libnetbeans.dylib.tar
 #
 # include compiler specific variables
 #

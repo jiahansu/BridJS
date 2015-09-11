@@ -88,13 +88,7 @@
           <standard>8</standard>
           <incDir>
             <pElem>../../deps/dyncall-0.8/include</pElem>
-            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
-            <pElem>/usr/include/nodejs/src</pElem>
-            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
-            <pElem>/usr/include/nodejs</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/deps/v8/include</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/src</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/deps/uv/include</pElem>
+            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -254,13 +248,7 @@
           <standard>8</standard>
           <incDir>
             <pElem>../../deps/dyncall-0.8/include</pElem>
-            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
-            <pElem>/usr/include/nodejs/src</pElem>
-            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
-            <pElem>/usr/include/nodejs</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/deps/v8/include</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/src</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/deps/uv/include</pElem>
+            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -424,13 +412,7 @@
           <standard>8</standard>
           <incDir>
             <pElem>../../deps/dyncall-0.8/include</pElem>
-            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
-            <pElem>/usr/include/nodejs/src</pElem>
-            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
-            <pElem>/usr/include/nodejs</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/deps/v8/include</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/src</pElem>
-            <pElem>/home/jiahan/.node-gyp/0.12.2/deps/uv/include</pElem>
+            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -567,6 +549,167 @@
       <item path="../../src/struct_v8.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../src/test.cc" ex="false" tool="1" flavor2="8">
+      </item>
+      <item path="../../src/test.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/union_struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/union_struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Darwin_X64" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <warningLevel>2</warningLevel>
+        </cTool>
+        <ccTool>
+          <architecture>2</architecture>
+          <standard>8</standard>
+          <incDir>
+            <pElem>../../deps/dyncall-0.8/include</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
+          </incDir>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <fortranCompilerTool>
+          <architecture>2</architecture>
+        </fortranCompilerTool>
+        <asmTool>
+          <architecture>2</architecture>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/../../../build/Release/bridjs.node</output>
+          <linkerLibItems>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_x64/libdyncall_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_x64/libdyncallback_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/linux_x64/libdynload_s.a</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="../../deps/dyncall-0.7/include/dyncall.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../deps/dyncall-0.7/include/dynload.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/callback_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/function_callback_wrapper.js"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../lib/native_lib.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/pass_type_wrapper.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/struct_field.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../lib/utils.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/array_struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/bridjs_module.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncall_v8_utils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dyncallback_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/dynload_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/native_function_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/pointer_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../src/struct_v8.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../src/test.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../src/test.h" ex="false" tool="3" flavor2="0">
       </item>

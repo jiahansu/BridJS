@@ -81,57 +81,57 @@ ${CND_DISTDIR}/../../../build/Release/bridjs.node: ${OBJECTFILES}
 ${OBJECTDIR}/_ext/1445274692/array_struct_v8.o: ../../src/array_struct_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/array_struct_v8.o ../../src/array_struct_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/array_struct_v8.o ../../src/array_struct_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/bridjs_module.o: ../../src/bridjs_module.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/bridjs_module.o ../../src/bridjs_module.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/bridjs_module.o ../../src/bridjs_module.cc
 
 ${OBJECTDIR}/_ext/1445274692/dyncall_v8.o: ../../src/dyncall_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dyncall_v8.o ../../src/dyncall_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dyncall_v8.o ../../src/dyncall_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/dyncall_v8_utils.o: ../../src/dyncall_v8_utils.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dyncall_v8_utils.o ../../src/dyncall_v8_utils.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dyncall_v8_utils.o ../../src/dyncall_v8_utils.cc
 
 ${OBJECTDIR}/_ext/1445274692/dyncallback_v8.o: ../../src/dyncallback_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dyncallback_v8.o ../../src/dyncallback_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dyncallback_v8.o ../../src/dyncallback_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/dynload_v8.o: ../../src/dynload_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dynload_v8.o ../../src/dynload_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/dynload_v8.o ../../src/dynload_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/native_function_v8.o: ../../src/native_function_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/native_function_v8.o ../../src/native_function_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/native_function_v8.o ../../src/native_function_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/pointer_v8.o: ../../src/pointer_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/pointer_v8.o ../../src/pointer_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/pointer_v8.o ../../src/pointer_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/struct_v8.o: ../../src/struct_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/struct_v8.o ../../src/struct_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/struct_v8.o ../../src/struct_v8.cc
 
 ${OBJECTDIR}/_ext/1445274692/test.o: ../../src/test.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/test.o ../../src/test.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/test.o ../../src/test.cc
 
 ${OBJECTDIR}/_ext/1445274692/union_struct_v8.o: ../../src/union_struct_v8.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1445274692
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I/home/jiahan/.node-gyp/0.12.2/deps/v8/include -I/home/jiahan/.node-gyp/0.12.2/src -I/home/jiahan/.node-gyp/0.12.2/deps/uv/include -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/union_struct_v8.o ../../src/union_struct_v8.cc
+	$(COMPILE.cc) -g -Wall -I../../deps/dyncall-0.8/include -I/home/jiahan/.node-gyp/4.0.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1445274692/union_struct_v8.o ../../src/union_struct_v8.cc
 
 # Subprojects
 .build-subprojects:
