@@ -239,9 +239,17 @@ Local<Value> bridjs::Utils::wrapPointerToBuffer(Isolate* isolate, const void* pt
 
 void* bridjs::Utils::unwrapBufferToPointer(v8::Local<v8::Value> value){
 	void* ptr;
-        v8::Local<v8::ArrayBuffer> ab = value.As<v8::ArrayBuffer>();
+        void* bufferPtr;
+        
+        if(node::Buffer::HasInstance(value)){
+            bufferPtr = node::Buffer::Data(value);
+        }else{
+            v8::Local<v8::ArrayBuffer> ab = value.As<v8::ArrayBuffer>();
+            
+            bufferPtr = ab->GetContents().Data();
+        }
          
-	std::memcpy(&ptr, ab->GetContents().Data(), sizeof(void*));
+	std::memcpy(&ptr, bufferPtr, sizeof(void*));
 
 	return ptr;
 }
