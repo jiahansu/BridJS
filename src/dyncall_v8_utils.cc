@@ -34,6 +34,7 @@
 #include "pointer_v8.h"
 #include <iostream>
 #include <cstring>
+#include <node_version.h>
 
 extern "C"
 {
@@ -221,6 +222,36 @@ void bridjs::Utils::PointerToString(const v8::FunctionCallbackInfo<v8::Value>& a
 	args.GetReturnValue().Set(str);
 }
 
+#if NODE_MAJOR_VERSION<4
+
+Local<Value> bridjs::Utils::wrapPointerToBuffer(Isolate* isolate, const void* ptr) {
+    v8::EscapableHandleScope scope(isolate);
+    Handle<Value> result;
+
+    if (ptr != NULL) {
+        v8::Local<v8::Object> buf = node::Buffer::New(isolate, (char*) (&ptr), sizeof (void*));
+        result = scope.Escape(buf);
+    } else {
+        result = scope.Escape(v8::Local<Primitive>::New(isolate, v8::Null(isolate)));
+    }
+
+    return result;
+
+	//memcpy(&pptr,node::Buffer::Data(buf), sizeof(void*));
+
+	
+}
+
+void* bridjs::Utils::unwrapBufferToPointer(v8::Local<v8::Value> value){
+	void* ptr;
+
+	memcpy(&ptr, node::Buffer::Data(value->ToObject()), sizeof(void*));
+
+	return ptr;
+}
+
+#else
+
 Local<Value> bridjs::Utils::wrapPointerToBuffer(Isolate* isolate, const void* ptr) {
     v8::EscapableHandleScope scope(isolate);
     
@@ -235,7 +266,6 @@ Local<Value> bridjs::Utils::wrapPointerToBuffer(Isolate* isolate, const void* pt
         return scope.Escape(v8::Local<Primitive>::New(isolate, v8::Null(isolate)));
     }
 }
-
 
 void* bridjs::Utils::unwrapBufferToPointer(v8::Local<v8::Value> value){
 	void* ptr;
@@ -253,6 +283,8 @@ void* bridjs::Utils::unwrapBufferToPointer(v8::Local<v8::Value> value){
 
 	return ptr;
 }
+
+#endif
 
 Local<v8::Value> bridjs::Utils::wrapPointer(v8::Isolate* isolate,const void* ptr){
     v8::EscapableHandleScope scope(isolate);
