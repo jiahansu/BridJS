@@ -138,8 +138,8 @@ void Dynload::loadLibrary(const v8::FunctionCallbackInfo<v8::Value>& args) {
 #ifndef _MSC_VER
             lib = dlLoadLibrary((*libpath));
 #else
-            std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> cvt;
-            std::u16string libPathStr = cvt.from_bytes(*libpath); //ConvertFromUtf8ToUtf16(*libpath);
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> cvt;
+            std::wstring libPathStr = cvt.from_bytes(*libpath); //ConvertFromUtf8ToUtf16(*libpath);
 
             lib = (DLLib*) LoadLibraryW((LPCWSTR) libPathStr.c_str());
 #endif
@@ -194,8 +194,8 @@ void Dynload::symsInit(const v8::FunctionCallbackInfo<v8::Value>& args) {
     pSyms = dlSymsInit(*libpath);
 #else
     try {
-        std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> cvt;
-        std::u16string libPathStr = cvt.from_bytes(*libpath); //ConvertFromUtf8ToUtf16(*libpath);
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> cvt;
+        std::wstring libPathStr = cvt.from_bytes(*libpath); //ConvertFromUtf8ToUtf16(*libpath);
         DLLib* pLib = (DLLib*) LoadLibraryW((LPCWSTR) libPathStr.c_str());
         pSyms = (DLSyms*) malloc(sizeof (DLSyms));
 
