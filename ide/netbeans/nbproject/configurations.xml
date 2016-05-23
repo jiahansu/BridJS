@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="f2" displayName="dyncall" projectFiles="true">
-      <itemPath>../../deps/dyncall-0.7/include/dyncall.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_alloc_wx.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_args.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_callback.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_callf.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_config.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_macros.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_signature.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_thunk.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_types.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dyncall_value.h</itemPath>
-      <itemPath>../../deps/dyncall-0.7/include/dynload.h</itemPath>
-    </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
@@ -107,66 +93,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="../../deps/dyncall-0.7/include/dyncall.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dynload.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
@@ -271,66 +197,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="../../deps/dyncall-0.7/include/dyncall.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dynload.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
@@ -435,66 +301,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="../../deps/dyncall-0.7/include/dyncall.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dynload.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">
@@ -596,66 +402,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="../../deps/dyncall-0.7/include/dyncall.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_alloc_wx.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_args.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callback.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_callf.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_config.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_macros.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_signature.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_thunk.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_types.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dyncall_value.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../deps/dyncall-0.7/include/dynload.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../lib/bridjs_exception.js" ex="false" tool="3" flavor2="0">

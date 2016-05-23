@@ -1,6 +1,6 @@
 {
     "name": "bridjs",
-    "version": "0.3.4-4",
+    "version": "0.3.4-5",
     "description": "V8 bindings for dyncall, and BridJ-like API for nodejs.",
     "keywords": [
         "dyncall",
@@ -34,13 +34,13 @@
         "myclass": ">=1.0.2",
         "log4js": ">=0.6.9",
         "amdefine": ">=1.0.0",
-        "xregexp" : ">=2.0.0"
+        "xregexp" : "3.1.1"
     },
     "devDependencies": {
         "myclass": ">=1.0.2",
         "log4js": ">=0.6.9",
         "amdefine": ">=1.0.0",
-        "xregexp" : ">=2.0.0"
+        "xregexp" : "3.1.1"
     },
     "browser": {
         "os": false

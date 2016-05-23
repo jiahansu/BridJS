@@ -15,3 +15,5 @@ win32_x64/binding.gyp
 /build/netbeans/dist/
 /ide/netbeans/dist/
 /ide/netbeans/build/
+/ide/netbeans 拷貝/build/
+/nbproject/private/
