@@ -39,6 +39,7 @@
 #include <node_buffer.h>
 #include <vector>
 #include <map>
+#include <nan.h>
 
 extern "C" {
 #include "dynload.h"
@@ -50,10 +51,11 @@ namespace bridjs {
     class ArrayStruct : public bridjs::Struct {
     public:
         static void Init(v8::Handle<v8::Object> exports);
-        static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetFieldType(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static NAN_METHOD(New);
+        /*
+        static NAN_METOD(GetFieldType);
+        static NAN_METOD(GetFieldOffset);
+        static NAN_METOD(GetFieldCount);*/
         static ArrayStruct* New(v8::Isolate *isolate,const char type, const size_t length, const size_t alignment = DEFAULT_ALIGNMENT);
         
         //DCCallVM* getVM() const;

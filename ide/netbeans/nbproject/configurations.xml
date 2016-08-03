@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -74,7 +74,12 @@
           <standard>8</standard>
           <incDir>
             <pElem>../../deps/dyncall-0.8/include</pElem>
-            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>../../../../../.node-gyp/6.2.0/include/node</pElem>
+            <pElem>../../node_modules/nan</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -174,7 +179,12 @@
           <standard>8</standard>
           <incDir>
             <pElem>../../deps/dyncall-0.8/include</pElem>
-            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>../../../../../.node-gyp/6.2.0/include/node</pElem>
+            <pElem>../../node_modules/nan</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -278,7 +288,12 @@
           <standard>8</standard>
           <incDir>
             <pElem>../../deps/dyncall-0.8/include</pElem>
-            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
+            <pElem>/usr/include/nodejs/deps/v8/include</pElem>
+            <pElem>/usr/include/nodejs/src</pElem>
+            <pElem>/usr/include/nodejs/deps/uv/include</pElem>
+            <pElem>/usr/include/nodejs</pElem>
+            <pElem>../../../../../.node-gyp/6.2.0/include/node</pElem>
+            <pElem>../../node_modules/nan</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -383,7 +398,8 @@
             <pElem>/usr/include/nodejs/src</pElem>
             <pElem>/usr/include/nodejs/deps/uv/include</pElem>
             <pElem>/usr/include/nodejs</pElem>
-            <pElem>/home/jiahan/.node-gyp/4.0.0/include/node</pElem>
+            <pElem>../../../../../.node-gyp/6.2.0/include/node</pElem>
+            <pElem>../../node_modules/nan</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>
@@ -396,10 +412,11 @@
         <linkerTool>
           <output>${CND_DISTDIR}/../../../build/Release/bridjs.node</output>
           <linkerLibItems>
-            <linkerLibFileItem>../../deps/dyncall-0.8/linux_x64/libdyncall_s.a</linkerLibFileItem>
-            <linkerLibFileItem>../../deps/dyncall-0.8/linux_x64/libdyncallback_s.a</linkerLibFileItem>
-            <linkerLibFileItem>../../deps/dyncall-0.8/linux_x64/libdynload_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/darwin/libdyncall_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/darwin/libdyncallback_s.a</linkerLibFileItem>
+            <linkerLibFileItem>../../deps/dyncall-0.8/darwin/libdynload_s.a</linkerLibFileItem>
           </linkerLibItems>
+          <commandLine>-undefined dynamic_lookup</commandLine>
         </linkerTool>
       </compileType>
       <item path="../../lib/bridjs.js" ex="false" tool="3" flavor2="0">

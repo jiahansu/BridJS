@@ -52,13 +52,22 @@ std::map<uint32_t,v8::Local<v8::Object>> bridjs::ArrayStruct::mEmptySubStructMap
 void bridjs::ArrayStruct::Init(v8::Handle<v8::Object> exports) {
     Isolate* isolate = Isolate::GetCurrent();
     // Prepare constructor template
-    Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate,bridjs::ArrayStruct::New);
+    Local<FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(bridjs::ArrayStruct::New);
 
 
     tpl->SetClassName(v8::String::NewFromUtf8(isolate,"ArrayStruct"));
     tpl->InstanceTemplate()->SetInternalFieldCount(8);
-
+    
+    Nan::SetPrototypeMethod(tpl, "getFieldType", bridjs::Struct::GetFieldType);
+    Nan::SetPrototypeMethod(tpl, "getFieldCount", bridjs::Struct::GetFieldCount);
+    Nan::SetPrototypeMethod(tpl, "getFieldOffset", bridjs::Struct::GetFieldOffset);
+    Nan::SetPrototypeMethod(tpl, "getField", bridjs::Struct::GetField);
+    Nan::SetPrototypeMethod(tpl, "setField", bridjs::Struct::SetField);
+    Nan::SetPrototypeMethod(tpl, "getSize", bridjs::Struct::GetSize);
+    Nan::SetPrototypeMethod(tpl, "getSignature", bridjs::Struct::GetSignature);
+    Nan::SetPrototypeMethod(tpl, "toString", bridjs::Struct::ToString);
     // Prototype
+    /*
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldType", v8::String::kInternalizedString),
             FunctionTemplate::New(isolate,bridjs::Struct::GetFieldType)->GetFunction(), ReadOnly);
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldCount", v8::String::kInternalizedString),
@@ -75,7 +84,7 @@ void bridjs::ArrayStruct::Init(v8::Handle<v8::Object> exports) {
             FunctionTemplate::New(isolate,bridjs::Struct::GetSignature)->GetFunction(), ReadOnly);
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"toString", v8::String::kInternalizedString),
             FunctionTemplate::New(isolate,bridjs::Struct::ToString)->GetFunction(), ReadOnly);
-
+    */
     constructor.Reset(isolate,tpl->GetFunction());
 
     exports->Set(v8::String::NewFromUtf8(isolate,"ArrayStruct"), tpl->GetFunction());
@@ -88,20 +97,20 @@ bridjs::ArrayStruct* bridjs::ArrayStruct::New(v8::Isolate* isolate,const char ty
     return new bridjs::ArrayStruct(isolate, type, length, alignment);
 }
 
-void bridjs::ArrayStruct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::ArrayStruct::New) {
     Isolate* isolate = Isolate::GetCurrent();
     HandleScope scope(isolate);
 
-    if (args.IsConstructCall()) {
+    if (info.IsConstructCall()) {
         try {
-            GET_CHAR_ARG(type, args, 0);
-            GET_INT64_ARG(length, args, 1);
+            GET_CHAR_ARG(type, info, 0);
+            GET_INT64_ARG(length, info, 1);
             size_t alignment = DEFAULT_ALIGNMENT;
             ArrayStruct *obj = new ArrayStruct(isolate, type, static_cast<size_t> (length), alignment);
 
-            obj->Wrap(args.This());
+            obj->Wrap(info.This());
 
-            args.GetReturnValue().Set(args.This());
+            info.GetReturnValue().Set(info.This());
             
             return;
         } catch (std::exception &e) {
@@ -109,10 +118,10 @@ void bridjs::ArrayStruct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
         }
     } else {
         const int argc = 1;
-        Local<Value> argv[argc] = {args[0]};
+        Local<Value> argv[argc] = {info[0]};
         Local<Function> cons = Local<Function>::New(isolate, constructor);
         
-        args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        info.GetReturnValue().Set(cons->NewInstance(isolate->GetCurrentContext(),argc, argv).ToLocalChecked());
         
         return;
     }

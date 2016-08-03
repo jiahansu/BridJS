@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug_X64" type="2">
@@ -120,8 +120,12 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
+            <option name="debug_command" value="/usr/local/bin/node test/bridjs_test.js"/>
+            <option name="debug_dir" value="/Users/jiahan/Dropbox/works/BridJS"/>
           </DebugOptions>
         </gdb_options>
         <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
@@ -134,9 +138,10 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>nodejs test/bridjs_test.js</runcommandpicklistitem>
           <runcommandpicklistitem>node test/bridjs_test.js</runcommandpicklistitem>
+          <runcommandpicklistitem>/usr/local/bin/node test/bridjs_test.js</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>node test/bridjs_test.js</runcommand>
-        <rundir>/home/jiahan/Dropbox/works/BridJS</rundir>
+        <runcommand>/usr/local/bin/node test/bridjs_test.js</runcommand>
+        <rundir>/Users/jiahan/Dropbox/works/BridJS</rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
         <remove-instrumentation>0</remove-instrumentation>

@@ -49,15 +49,15 @@ namespace bridjs{
 	class Struct :public node::ObjectWrap{
 public:
 	static void Init(v8::Handle<v8::Object> exports);
-	static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void GetSize(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void GetField(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void SetField(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void GetSignature(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void GetFieldType(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args);
-	static void ToString(const v8::FunctionCallbackInfo<v8::Value>& args);
+	static NAN_METHOD(New);
+	static NAN_METHOD(GetSize);
+	static NAN_METHOD(GetField);
+	static NAN_METHOD(SetField);
+	static NAN_METHOD(GetSignature);
+	static NAN_METHOD(GetFieldType);
+	static NAN_METHOD(GetFieldOffset);
+	static NAN_METHOD(GetFieldCount);
+	static NAN_METHOD(ToString);
 	static Struct* New(v8::Isolate* pIsolate,const std::vector<char> &fieldType,std::map<uint32_t,v8::Local<v8::Object> > &subStructMap);
 	//DCCallVM* getVM() const;
 	static size_t getAlignSize(size_t size, size_t alignment);
@@ -80,7 +80,7 @@ protected:
 	size_t mSize;
 	size_t mAligment;
         
-        static void   parseJSArguments(v8::Isolate* pIsolate,const v8::FunctionCallbackInfo<v8::Value>& args, 
+        static void   parseJSArguments(v8::Isolate* pIsolate,const Nan::FunctionCallbackInfo<v8::Value>& args, 
         std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap);
         
 	Struct(v8::Isolate* pIsolate,const std::vector<char> &fieldType, std::map<uint32_t,v8::Local<v8::Object>> &subStructMap,const size_t alignment);

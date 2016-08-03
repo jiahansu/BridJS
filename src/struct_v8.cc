@@ -49,9 +49,9 @@ using namespace node;
 
 Persistent<v8::Function> bridjs::Struct::constructor;
 
-void bridjs::Struct::GetSize(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::GetSize) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
     v8::Handle<v8::Value> value;
 
     try {
@@ -60,15 +60,15 @@ void bridjs::Struct::GetSize(const v8::FunctionCallbackInfo<v8::Value>& args) {
         value = THROW_EXCEPTION(e.what());
     }
 
-    args.GetReturnValue().Set(value);
+    info.GetReturnValue().Set(value);
 }
 
-void bridjs::Struct::GetField(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::GetField) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
     v8::Handle<v8::Value> value;
-    GET_INT32_ARG(index, args, 0);
-    GET_POINTER_ARG(void, pTarget, args, 1);
+    GET_INT32_ARG(index, info, 0);
+    GET_POINTER_ARG(void, pTarget, info, 1);
 
     try {
         value = bridjs::Utils::convertDataByType(isolate,obj->getField(index, pTarget), obj->getFieldType(index));
@@ -76,16 +76,16 @@ void bridjs::Struct::GetField(const v8::FunctionCallbackInfo<v8::Value>& args) {
         value = THROW_EXCEPTION(e.what());
     }
 
-    args.GetReturnValue().Set(value);
+    info.GetReturnValue().Set(value);
 }
 
-void bridjs::Struct::SetField(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::SetField) {
     Isolate* isolate = Isolate::GetCurrent(); 
     HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
     v8::Handle<v8::Value> value;
-    GET_INT32_ARG(index, args, 0);
-    GET_POINTER_ARG(void, pTarget, args, 2);
+    GET_INT32_ARG(index, info, 0);
+    GET_POINTER_ARG(void, pTarget, info, 2);
     std::shared_ptr<void> data;
     const char type = obj->getFieldType(index);
 
@@ -93,86 +93,86 @@ void bridjs::Struct::SetField(const v8::FunctionCallbackInfo<v8::Value>& args) {
         switch (type) {
             case DC_SIGCHAR_BOOL:
             {
-                GET_BOOL_ARG(value, args, 1);
+                GET_BOOL_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCbool(value));
             }
                 break;
             case DC_SIGCHAR_UCHAR:
             {
-                GET_CHAR_ARG(value, args, 1);
+                GET_CHAR_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCuchar(value));
             }
                 break;
             case DC_SIGCHAR_CHAR:
             {
-                GET_CHAR_ARG(value, args, 1);
+                GET_CHAR_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCchar(value));
             }
                 break;
             case DC_SIGCHAR_SHORT:
             {
-                GET_INT32_ARG(value, args, 1);
+                GET_INT32_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCshort(value));
             }
                 break;
             case DC_SIGCHAR_USHORT:
             {
-                GET_INT32_ARG(value, args, 1);
+                GET_INT32_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCushort(value));
             }
                 break;
             case DC_SIGCHAR_INT:
             {
-                GET_INT32_ARG(value, args, 1);
+                GET_INT32_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCint(value));
             }
                 break;
             case DC_SIGCHAR_UINT:
             {
-                GET_INT32_ARG(value, args, 1);
+                GET_INT32_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCuint(value));
             }
                 break;
             case DC_SIGCHAR_LONG:
             {
-                GET_INT64_ARG(value, args, 1);
+                GET_INT64_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DClong(static_cast<DClong> (value)));
             }
                 break;
             case DC_SIGCHAR_ULONG:
             {
-                GET_INT64_ARG(value, args, 1);
+                GET_INT64_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCulong(static_cast<DCulong> (value)));
             }
                 break;
             case DC_SIGCHAR_LONGLONG:
             {
-                GET_INT64_ARG(value, args, 1);
+                GET_INT64_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DClonglong(value));
             }
                 break;
             case DC_SIGCHAR_ULONGLONG:
             {
-                GET_INT64_ARG(value, args, 1);
+                GET_INT64_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCulonglong(value));
             }
                 break;
             case DC_SIGCHAR_FLOAT:
             {
-                GET_FLOAT_ARG(value, args, 1);
+                GET_FLOAT_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCfloat(value));
             }
                 break;
             case DC_SIGCHAR_DOUBLE:
             {
-                GET_DOUBLE_ARG(value, args, 1);
+                GET_DOUBLE_ARG(value, info, 1);
                 data = std::shared_ptr<void>(new DCdouble(value));
             }
                 break;
             case DC_SIGCHAR_STRING:
             case DC_SIGCHAR_POINTER:
             {
-                GET_POINTER_ARG(void, value, args, 1);
+                GET_POINTER_ARG(void, value, info, 1);
                 data = std::shared_ptr<void>(new DCpointer(value));
             }
                 break;
@@ -192,26 +192,26 @@ void bridjs::Struct::SetField(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
         obj->setField(index, data, pTarget);
 
-        args.GetReturnValue().Set(v8::Undefined(isolate));
+        info.GetReturnValue().Set(v8::Undefined(isolate));
     } catch (std::out_of_range& e) {
         THROW_EXCEPTION(e.what());
     }
 }
 
-void bridjs::Struct::GetSignature(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::GetSignature) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
 
 
-    args.GetReturnValue().Set(WRAP_STRING(obj->getSignature().c_str()));
+    info.GetReturnValue().Set(WRAP_STRING(obj->getSignature().c_str()));
 }
 
-void bridjs::Struct::ToString(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::ToString) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
 
 
-    args.GetReturnValue().Set(WRAP_STRING(obj->toString().c_str()));
+    info.GetReturnValue().Set(WRAP_STRING(obj->toString().c_str()));
 }
 
 size_t bridjs::Struct::getAlignSize(size_t size, size_t alignment) {
@@ -289,15 +289,25 @@ size_t bridjs::Struct::addPadding(size_t calculatedSize, const size_t alignment)
 void bridjs::Struct::Init(v8::Handle<v8::Object> exports) {
     Isolate* isolate = Isolate::GetCurrent();
     // Prepare constructor template
-    Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate,New);
+    Local<FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
 
 
     tpl->SetClassName(v8::String::NewFromUtf8(isolate,"Struct"));
     tpl->InstanceTemplate()->SetInternalFieldCount(8);
     // Prototype
+    
+    Nan::SetPrototypeMethod(tpl, "getFieldType", bridjs::Struct::GetFieldType);
+    Nan::SetPrototypeMethod(tpl, "getFieldCount", bridjs::Struct::GetFieldCount);
+    Nan::SetPrototypeMethod(tpl, "getFieldOffset", bridjs::Struct::GetFieldOffset);
+    Nan::SetPrototypeMethod(tpl, "getField", bridjs::Struct::GetField);
+    Nan::SetPrototypeMethod(tpl, "setField", bridjs::Struct::SetField);
+    Nan::SetPrototypeMethod(tpl, "getSize", bridjs::Struct::GetSize);
+    Nan::SetPrototypeMethod(tpl, "getSignature", bridjs::Struct::GetSignature);
+    Nan::SetPrototypeMethod(tpl, "toString", bridjs::Struct::ToString);
     /*
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getVM"),
             FunctionTemplate::New(GetVM)->GetFunction(), ReadOnly);*/
+    /*
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldType"),
             FunctionTemplate::New(isolate,GetFieldType)->GetFunction(), ReadOnly);
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldCount"),
@@ -314,7 +324,7 @@ void bridjs::Struct::Init(v8::Handle<v8::Object> exports) {
             FunctionTemplate::New(isolate,GetSignature)->GetFunction(), ReadOnly);
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"toString"),
             FunctionTemplate::New(isolate,bridjs::Struct::ToString)->GetFunction(), ReadOnly);
-
+    */
     constructor.Reset(isolate,tpl->GetFunction());
 
     exports->Set(v8::String::NewFromUtf8(isolate,"Struct"), tpl->GetFunction());
@@ -325,7 +335,7 @@ bridjs::Struct* bridjs::Struct::New(v8::Isolate* pIsolate, const std::vector<cha
     return new bridjs::Struct(pIsolate,fieldTypes, subStructMap, DEFAULT_ALIGNMENT);
 }
 
-void bridjs::Struct::parseJSArguments(v8::Isolate* isolate,const v8::FunctionCallbackInfo<v8::Value>& args,
+void bridjs::Struct::parseJSArguments(v8::Isolate* isolate,const Nan::FunctionCallbackInfo<v8::Value>& args,
         std::vector<char> &argumentTypes, 
         std::map<uint32_t,v8::Local<v8::Object>> &subStructMap){
     
@@ -364,32 +374,32 @@ void bridjs::Struct::parseJSArguments(v8::Isolate* isolate,const v8::FunctionCal
     }
 }
 
-void bridjs::Struct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::New) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
-    if (args.IsConstructCall()) {
+    if (info.IsConstructCall()) {
         try {
             std::vector<char> argumentTypes;
             size_t alignment = DEFAULT_ALIGNMENT;
             std::map<uint32_t, v8::Local < v8::Object >> subStructMap;
             Struct* obj;
 
-            parseJSArguments(isolate,args, argumentTypes, subStructMap);
+            parseJSArguments(isolate,info, argumentTypes, subStructMap);
 
 
             //buffer = std::shared_ptr<node::Buffer>(node::Buffer::New(getFieldsSize(argumentTypes,alignment)));
             obj = new Struct(isolate,argumentTypes, subStructMap, alignment);
-            obj->Wrap(args.This());
-            args.GetReturnValue().Set(args.This());
+            obj->Wrap(info.This());
+            info.GetReturnValue().Set(info.This());
         } catch (std::exception &e) {
             isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,e.what())));
         }
     } else {
         const int argc = 1;
-        Local<Value> argv[argc] = {args[0]};
+        Local<Value> argv[argc] = {info[0]};
         Local<Function> cons = Local<Function>::New(isolate, constructor);
         
-        args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        info.GetReturnValue().Set(cons->NewInstance(v8::Isolate::GetCurrent()->GetCurrentContext(),argc, argv).ToLocalChecked());
     }
 }
 
@@ -404,11 +414,11 @@ v8::Handle<v8::Value> bridjs::Signature::NewInstance(const void* ptr){
     return scope.Close(constructor->NewInstance(1, argv));
 }*/
 
-void bridjs::Struct::GetFieldType(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::GetFieldType) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
     v8::Handle<v8::Value> value;
-    GET_INT32_ARG(index, args, 0);
+    GET_INT32_ARG(index, info, 0);
 
     try {
         value = bridjs::Utils::toV8String(isolate,obj->getFieldType(index));
@@ -416,14 +426,14 @@ void bridjs::Struct::GetFieldType(const v8::FunctionCallbackInfo<v8::Value>& arg
         value = THROW_EXCEPTION(e.what());
     }
 
-    args.GetReturnValue().Set(value);
+    info.GetReturnValue().Set(value);
 }
 
-void bridjs::Struct::GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::GetFieldOffset) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<bridjs::Struct>(info.This());
     v8::Handle<v8::Value> value;
-    GET_UINT32_ARG(index, args, 0);
+    GET_UINT32_ARG(index, info, 0);
 
     try {
         value = WRAP_UINT(static_cast<uint32_t>(obj->getFieldOffset(index)));
@@ -431,14 +441,14 @@ void bridjs::Struct::GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& a
         value = THROW_EXCEPTION(e.what());
     }
 
-    args.GetReturnValue().Set(value);
+    info.GetReturnValue().Set(value);
 }
 
-void bridjs::Struct::GetFieldCount(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::Struct::GetFieldCount) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::Struct* obj = ObjectWrap::Unwrap<Struct>(args.This());
+    bridjs::Struct* obj = ObjectWrap::Unwrap<Struct>(info.This());
 
-    args.GetReturnValue().Set(v8::Int32::New(isolate,static_cast<int32_t> (obj->getFieldCount())));
+    info.GetReturnValue().Set(v8::Int32::New(isolate,static_cast<int32_t> (obj->getFieldCount())));
 }
 
 bridjs::Struct::Struct(Isolate* pIsolate,const std::vector<char> &fieldTypes,

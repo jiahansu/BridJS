@@ -50,29 +50,21 @@ Persistent<v8::Function> bridjs::UnionStruct::constructor;
 void bridjs::UnionStruct::Init(v8::Handle<v8::Object> exports) {
     Isolate* isolate = Isolate::GetCurrent();
     // Prepare constructor template
-    Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate,bridjs::UnionStruct::New);
+    Local<FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(bridjs::UnionStruct::New);
 
 
     tpl->SetClassName(v8::String::NewFromUtf8(isolate,"UnionStruct"));
     tpl->InstanceTemplate()->SetInternalFieldCount(8);
 
     // Prototype
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldType", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::GetFieldType)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldCount", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::GetFieldCount)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getFieldOffset", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::GetFieldOffset)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getField", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::GetField)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"setField", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::SetField)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getSize", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::GetSize)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getSignature", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::GetSignature)->GetFunction(), ReadOnly);
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"toString", v8::String::kInternalizedString),
-            FunctionTemplate::New(isolate,bridjs::Struct::ToString)->GetFunction(), ReadOnly);
+    Nan::SetPrototypeMethod(tpl, "getFieldType", bridjs::Struct::GetFieldType);
+    Nan::SetPrototypeMethod(tpl, "getFieldCount", bridjs::Struct::GetFieldCount);
+    Nan::SetPrototypeMethod(tpl, "getFieldOffset", bridjs::Struct::GetFieldOffset);
+    Nan::SetPrototypeMethod(tpl, "getField", bridjs::Struct::GetField);
+    Nan::SetPrototypeMethod(tpl, "setField", bridjs::Struct::SetField);
+    Nan::SetPrototypeMethod(tpl, "getSize", bridjs::Struct::GetSize);
+    Nan::SetPrototypeMethod(tpl, "getSignature", bridjs::Struct::GetSignature);
+    Nan::SetPrototypeMethod(tpl, "toString", bridjs::Struct::ToString);
 
     constructor.Reset(isolate,tpl->GetFunction());
 
@@ -84,33 +76,33 @@ bridjs::UnionStruct* bridjs::UnionStruct::New(v8::Isolate* pIsolate, const std::
     return new bridjs::UnionStruct(pIsolate, fieldTypes, subStructMap);
 }
 
-void bridjs::UnionStruct::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::UnionStruct::New) {
     Isolate* isolate = Isolate::GetCurrent();
     HandleScope scope(isolate);
 
-    if (args.IsConstructCall()) {
+    if (info.IsConstructCall()) {
         try {
             std::vector<char> argumentTypes;
             size_t alignment = DEFAULT_ALIGNMENT;
             std::map<uint32_t, v8::Local < v8::Object >> subStructMap;
             UnionStruct* obj;
 
-            bridjs::Struct::parseJSArguments(isolate, args, argumentTypes,subStructMap);
+            bridjs::Struct::parseJSArguments(isolate, info, argumentTypes,subStructMap);
 
 
             //buffer = std::shared_ptr<node::Buffer>(node::Buffer::New(getFieldsSize(argumentTypes,alignment)));
             obj = new UnionStruct(isolate,argumentTypes, subStructMap, alignment);
-            obj->Wrap(args.This());
-            args.GetReturnValue().Set(args.This());
+            obj->Wrap(info.This());
+            info.GetReturnValue().Set(info.This());
         } catch (std::exception &e) {
             isolate->ThrowException(v8::Exception::TypeError(v8::String::NewFromUtf8(isolate,e.what())));
         }
     } else {
         const int argc = 1;
-        Local<Value> argv[argc] = {args[0]};
+        Local<Value> argv[argc] = {info[0]};
         Local<Function> cons = Local<Function>::New(isolate, constructor);
         
-        args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        info.GetReturnValue().Set(cons->NewInstance(isolate->GetCurrentContext(),argc, argv).ToLocalChecked());
         
         return;
     }

@@ -706,7 +706,8 @@ void CallbackTask::done() {
     
     std::shared_ptr < v8::Local < Value >> argv = pullArgs(isolate,this->mpDCCallBack, this->mpDCArgs, this->mpCallbackWrapper);
     v8::Local<v8::Object> callbackObject = v8::Local<v8::Object>::New(isolate, this->mpCallbackWrapper->mpCallbackObject); 
-    v8::Local<Value> onDoneValue = callbackObject->GetRealNamedProperty(v8::String::NewFromUtf8(isolate,"onDone"));
+    v8::Local<Value> onDoneValue = callbackObject->GetRealNamedProperty(isolate->GetCurrentContext(),
+            v8::String::NewFromUtf8(isolate,"onDone")).ToLocalChecked();
 
     if (onDoneValue->IsFunction()) {
         v8::Local<v8::Function> onDoneFunction = v8::Local<Function>::Cast(onDoneValue);

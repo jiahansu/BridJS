@@ -18,6 +18,7 @@
       ],
       'include_dirs': [
         'deps/dyncall-0.8/include',
+        "<!(node -e \"require('nan')\")"
       ],
       "msbuild_settings": {
                 "Link": {

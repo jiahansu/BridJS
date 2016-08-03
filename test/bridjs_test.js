@@ -152,7 +152,7 @@ var lib;
             dyncall.structField(testStruct, Signature.LONGLONG_TYPE, dyncall.DEFAULT_ALIGNMENT, 1);
             dyncall.structField(testStruct, Signature.DOUBLE_TYPE, dyncall.DEFAULT_ALIGNMENT, 1);
             dyncall.closeStruct(testStruct);
-
+            console.log(structObject.getFieldType);
             log.info("TestStruct's size: "+ structObject.getSize()+", "+bridjs.getTypeSize(Signature.LONG_TYPE));
             
             testStructBuffer = new Buffer(structObject.getSize());

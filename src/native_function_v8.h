@@ -38,6 +38,7 @@
 #include <vector>
 #include <memory>
 #include <exception>
+#include <nan.h>
 
 extern "C" {
 #include "dynload.h"
@@ -66,9 +67,9 @@ namespace bridjs {
 
     class ArgumentCollection : public ValueCollection {
     private:
-        const v8::FunctionCallbackInfo<v8::Value>* mpArgs;
+        const Nan::FunctionCallbackInfo<v8::Value>* mpArgs;
     public:
-        ArgumentCollection(v8::Isolate* pIsolate,const v8::FunctionCallbackInfo<v8::Value>* pArg);
+        ArgumentCollection(v8::Isolate* pIsolate,const Nan::FunctionCallbackInfo<v8::Value>* pArg);
         v8::Local<v8::Value> get(const uint32_t i) const;
         uint32_t length() const;
         ~ArgumentCollection();
@@ -98,15 +99,15 @@ namespace bridjs {
     class NativeFunction : public node::ObjectWrap {
     public:
         static void Init(v8::Handle<v8::Object> exports);
-        static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static NAN_METHOD(New);
         //static v8::Handle<v8::Value> NewInstance(const void* ptr);
-        static void GetReturnType(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetArgumentType(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetArgumentsLength(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetVM(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetSymbol(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void Call(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void CallAsync(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static NAN_METHOD(GetReturnType);
+        static NAN_METHOD(GetArgumentType);
+        static NAN_METHOD(GetArgumentsLength);
+        static NAN_METHOD(GetVM);
+        static NAN_METHOD(GetSymbol);
+        static NAN_METHOD(Call);
+        static NAN_METHOD(CallAsync);
 
         static const bridjs::NativeFunction* Data(v8::Isolate *pIsolate,v8::Handle<v8::Value> val);
         static NativeFunction* New(void *pSymbol, const char returnType,

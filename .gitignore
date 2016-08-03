@@ -5,6 +5,7 @@ win32_ia32
 lib/bridjs/win32_x64
 node_modules
 dyncall
+build
 *~
 .DS_Store
 non_committable_experiments

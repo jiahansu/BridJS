@@ -39,6 +39,7 @@
 #include <node_buffer.h>
 #include <vector>
 #include <map>
+#include <nan.h>
 
 extern "C" {
 #include "dynload.h"
@@ -50,8 +51,7 @@ namespace bridjs {
     class UnionStruct : public bridjs::Struct {
     public:
         static void Init(v8::Handle<v8::Object> exports);
-        static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
-        static void GetFieldOffset(const v8::FunctionCallbackInfo<v8::Value>& args);
+        static NAN_METHOD(New);
         static UnionStruct* New(v8::Isolate* pIsolate, const std::vector<char> &fieldTypes, 
         std::map<uint32_t, v8::Local<v8::Object >> &subStructMap,const size_t alignment = DEFAULT_ALIGNMENT);
         

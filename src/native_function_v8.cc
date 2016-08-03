@@ -49,7 +49,7 @@ Persistent<v8::Function> bridjs::NativeFunction::constructor;
 Persistent<v8::String> ARGUMENTS_NAME;
 
 ArgumentCollection::ArgumentCollection(v8::Isolate* pIsolate,
-        const v8::FunctionCallbackInfo<v8::Value>* pArgs) :ValueCollection(pIsolate), 
+        const Nan::FunctionCallbackInfo<v8::Value>* pArgs) :ValueCollection(pIsolate), 
         mpArgs(pArgs) {
 
 };
@@ -89,7 +89,7 @@ ObjectCollection::ObjectCollection(v8::Isolate* pIsolate, const v8::Handle<v8::O
 }
 
 v8::Local<v8::Value> ObjectCollection::get(const uint32_t i) const {
-    if (this->mObject->Has(i)) {
+    if (this->mObject->Has(v8::Isolate::GetCurrent()->GetCurrentContext(),i).IsJust()) {
         return this->mObject->Get(i);
     } else {
         std::stringstream message;
@@ -101,7 +101,8 @@ v8::Local<v8::Value> ObjectCollection::get(const uint32_t i) const {
 }
 
 uint32_t ObjectCollection::length() const {
-    return this->mObject->GetRealNamedProperty(v8::String::NewFromUtf8(mpIsolate,"length"))->ToUint32()->Value();
+    return this->mObject->GetRealNamedProperty(v8::Isolate::GetCurrent()->GetCurrentContext(), 
+            v8::String::NewFromUtf8(mpIsolate,"length")).ToLocalChecked()->ToUint32(v8::Isolate::GetCurrent()->GetCurrentContext()).ToLocalChecked()->Value();
 }
 
 ObjectCollection::~ObjectCollection() {
@@ -354,14 +355,20 @@ void bridjs::NativeFunction::Init(v8::Handle<v8::Object> exports) {
     ARGUMENTS_NAME.Reset(isolate,v8::String::NewFromUtf8(isolate,"Arguments"));
 
     // Prepare constructor template
-    Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate,New);
+    Local<FunctionTemplate> tpl =  Nan::New<v8::FunctionTemplate>(New);
 
     tpl->SetClassName(v8::String::NewFromUtf8(isolate,"NativeFunction"));
-    tpl->InstanceTemplate()->SetInternalFieldCount(5);
+    tpl->InstanceTemplate()->SetInternalFieldCount(6);
+    
+
+    Nan::SetPrototypeMethod(tpl, "getSymbolName", GetSymbol);
+    Nan::SetPrototypeMethod(tpl, "getArgumentType", GetArgumentType);
+    Nan::SetPrototypeMethod(tpl, "getArgumentsLength", GetArgumentsLength);
+    Nan::SetPrototypeMethod(tpl, "callAsync", CallAsync);
+    Nan::SetPrototypeMethod(tpl, "call", Call);
+    Nan::SetPrototypeMethod(tpl, "getReturnType", GetReturnType);
     // Prototype
     /*
-    tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getVM"),
-            FunctionTemplate::New(GetVM)->GetFunction(), ReadOnly);*/
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getSymbolName"),
             FunctionTemplate::New(isolate,GetSymbol)->GetFunction(), ReadOnly);
     tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"getReturnType"),
@@ -374,7 +381,7 @@ void bridjs::NativeFunction::Init(v8::Handle<v8::Object> exports) {
             FunctionTemplate::New(isolate,Call)->GetFunction(), ReadOnly),
             tpl->PrototypeTemplate()->Set(v8::String::NewFromUtf8(isolate,"callAsync"),
             FunctionTemplate::New(isolate,CallAsync)->GetFunction(), ReadOnly);
-
+    */
     constructor.Reset(isolate,tpl->GetFunction());
 
     exports->Set(v8::String::NewFromUtf8(isolate,"NativeFunction"), tpl->GetFunction());
@@ -398,15 +405,15 @@ bridjs::NativeFunction* bridjs::NativeFunction::New(void *pSymbol, const char re
     return new bridjs::NativeFunction(pSymbol, returnType, argumentTypes);
 }
 
-void bridjs::NativeFunction::New(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::New) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
 
-    if (args.IsConstructCall()) {
+    if (info.IsConstructCall()) {
         NativeFunction* obj;
         std::vector<char> argumentTypes;
 
-        if (args[0]->IsArray()) {
-            v8::Local<v8::Array> array = v8::Local<v8::Array>::Cast(args[0]);
+        if (info[0]->IsArray()) {
+            v8::Local<v8::Array> array = v8::Local<v8::Array>::Cast(info[0]);
 
             GET_POINTER_VALUE(DLSyms, pSymbol, array->Get(0), 0);
             GET_CHAR_VALUE(returnType, array->Get(1), 1);
@@ -418,64 +425,64 @@ void bridjs::NativeFunction::New(const v8::FunctionCallbackInfo<v8::Value>& args
             }
             obj = new bridjs::NativeFunction(pSymbol, returnType, argumentTypes);
         } else {
-            GET_POINTER_ARG(DLSyms, pSymbol, args, 0);
-            GET_CHAR_ARG(returnType, args, 1);
+            GET_POINTER_ARG(DLSyms, pSymbol, info, 0);
+            GET_CHAR_ARG(returnType, info, 1);
 
-            for (int32_t i = 2; i < args.Length(); ++i) {
-                GET_CHAR_ARG(type, args, i);
+            for (int32_t i = 2; i < info.Length(); ++i) {
+                GET_CHAR_ARG(type, info, i);
                 argumentTypes.push_back(type);
             }
             obj = new NativeFunction(pSymbol, returnType, argumentTypes);
         }
-        obj->Wrap(args.This());
+        obj->Wrap(info.This());
 
-        args.GetReturnValue().Set(args.This());
+        info.GetReturnValue().Set(info.This());
     } else {
         const int argc = 1;
-        Local<Value> argv[argc] = {args[0]};
+        Local<Value> argv[argc] = {info[0]};
         Local<Function> cons = Local<Function>::New(isolate, constructor);
 
-        args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        info.GetReturnValue().Set(cons->NewInstance(isolate->GetCurrentContext(),argc, argv).ToLocalChecked());
     }
 }
 
-void bridjs::NativeFunction::GetReturnType(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::GetReturnType) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<NativeFunction>(args.This());
+    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<NativeFunction>(info.This());
 
-    args.GetReturnValue().Set(bridjs::Utils::toV8String(isolate,obj->getReturnType()));
+    info.GetReturnValue().Set(bridjs::Utils::toV8String(isolate,obj->getReturnType()));
 }
 
-void bridjs::NativeFunction::GetArgumentType(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::GetArgumentType) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<bridjs::NativeFunction>(args.This());
-    GET_INT32_ARG(index, args, 0);
+    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<bridjs::NativeFunction>(info.This());
+    GET_INT32_ARG(index, info, 0);
 
     try {
-        args.GetReturnValue().Set(bridjs::Utils::toV8String(isolate,obj->getArgumentType(index)));
+        info.GetReturnValue().Set(bridjs::Utils::toV8String(isolate,obj->getArgumentType(index)));
     } catch (std::out_of_range& e) {
         THROW_EXCEPTION(e.what());
     }
 }
 
-void bridjs::NativeFunction::GetArgumentsLength(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::GetArgumentsLength) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<NativeFunction>(args.This());
+    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<NativeFunction>(info.This());
 
-    args.GetReturnValue().Set(v8::Int32::New(isolate,static_cast<int32_t> (obj->getArgumentLength())));
+    info.GetReturnValue().Set(v8::Int32::New(isolate,static_cast<int32_t> (obj->getArgumentLength())));
 }
 
-void bridjs::NativeFunction::GetSymbol(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::GetSymbol) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<NativeFunction>(args.This());
+    bridjs::NativeFunction* obj = ObjectWrap::Unwrap<NativeFunction>(info.This());
 
-    args.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,obj->getSymbol()));
+    info.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,obj->getSymbol()));
 }
 
-void bridjs::NativeFunction::Call(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::Call) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::NativeFunction* nativeFunction = ObjectWrap::Unwrap<NativeFunction>(args.This());
-    GET_POINTER_ARG(DCCallVM, vm, args, 0);
+    bridjs::NativeFunction* nativeFunction = ObjectWrap::Unwrap<NativeFunction>(info.This());
+    GET_POINTER_ARG(DCCallVM, vm, info, 0);
 
     if (nativeFunction != NULL) {
         Local<Value> error;
@@ -487,8 +494,8 @@ void bridjs::NativeFunction::Call(const v8::FunctionCallbackInfo<v8::Value>& arg
                     std::make_shared<v8::StdPersistentValueMap<uint32_t,v8::Value>>(isolate);
             std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs 
                     = std::make_shared<std::vector<std::shared_ptr<std::string>>>();
-            if (/*args[1]->IsArray()*/args[1]->IsObject()) {
-                v8::Local<Object> object = args[1]->ToObject();
+            if (/*args[1]->IsArray()*/info[1]->IsObject()) {
+                v8::Local<Object> object = info[1]->ToObject();
                 if (object->GetConstructorName()->Equals(Local<v8::String>::New(isolate,ARGUMENTS_NAME))) {
 
                     const ObjectCollection collection(isolate,object);
@@ -502,7 +509,7 @@ void bridjs::NativeFunction::Call(const v8::FunctionCallbackInfo<v8::Value>& arg
             }
 
             if (!hasArgParameter) {
-                const ArgumentCollection collection(isolate,&args);
+                const ArgumentCollection collection(isolate,&info);
 
                  pushArgs(isolate,vm, nativeFunction, &collection, 1,pPersistArgs,pStringArgs,error);
             }
@@ -517,7 +524,7 @@ void bridjs::NativeFunction::Call(const v8::FunctionCallbackInfo<v8::Value>& arg
 
                     THROW_EXCEPTION(message.str().c_str());
                 } else {
-                    args.GetReturnValue().Set(returnValue);
+                    info.GetReturnValue().Set(returnValue);
                 }
             } else {
                 isolate->ThrowException(error);
@@ -533,16 +540,16 @@ void bridjs::NativeFunction::Call(const v8::FunctionCallbackInfo<v8::Value>& arg
     }
 }
 
-void bridjs::NativeFunction::CallAsync(const v8::FunctionCallbackInfo<v8::Value>& args) {
+NAN_METHOD(bridjs::NativeFunction::CallAsync) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
-    bridjs::NativeFunction* nativeFunction = ObjectWrap::Unwrap<NativeFunction>(args.This());
+    bridjs::NativeFunction* nativeFunction = ObjectWrap::Unwrap<NativeFunction>(info.This());
     //GET_POINTER_ARG(DCCallVM,vm,args,0);
 
     if (nativeFunction != NULL) {
         Local<v8::Value> callbackObject;
         Local<Value> error;
         bool hasArgParameter = false;
-        GET_UINT32_ARG(stackSize, args, 0);
+        GET_UINT32_ARG(stackSize, info, 0);
         DCCallVM *vm = dcNewCallVM(stackSize);
 
         try {
@@ -553,8 +560,8 @@ void bridjs::NativeFunction::CallAsync(const v8::FunctionCallbackInfo<v8::Value>
             
             dcReset(vm);
 
-            if (/*args[1]->IsArray()*/args[1]->IsObject()) {
-                v8::Local<Object> object = args[1]->ToObject();
+            if (/*args[1]->IsArray()*/info[1]->IsObject()) {
+                v8::Local<Object> object = info[1]->ToObject();
                 if (object->GetConstructorName()->Equals(Local<v8::String>::New(isolate,ARGUMENTS_NAME))) {
 
                     const ObjectCollection collection(isolate,object);
@@ -574,8 +581,8 @@ void bridjs::NativeFunction::CallAsync(const v8::FunctionCallbackInfo<v8::Value>
                 }
             }
             if (!hasArgParameter) {
-                const ArgumentCollection collection(isolate,&args);
-                callbackObject = args[args.Length() - 1];
+                const ArgumentCollection collection(isolate,&info);
+                callbackObject = info[info.Length() - 1];
 
                 if (callbackObject->IsObject()) {
                     pushArgs(isolate,vm, nativeFunction, &collection, 1,pPersistArgs,pStringArgs,error);
@@ -593,10 +600,10 @@ void bridjs::NativeFunction::CallAsync(const v8::FunctionCallbackInfo<v8::Value>
                 req->data = new bridjs::AsyncCallTask(isolate,vm, nativeFunction,pPersistArgs,pStringArgs, persistenObject);
                 uv_queue_work(uv_default_loop(), req, executeCallAsync, (uv_after_work_cb) afterCallAsync);
 
-                args.GetReturnValue().Set(v8::Undefined(isolate));
+                info.GetReturnValue().Set(v8::Undefined(isolate));
                 return;
             } else {
-                args.GetReturnValue().Set(error);
+                info.GetReturnValue().Set(error);
                 return;
             }
         } catch (std::out_of_range& e) {
@@ -684,7 +691,8 @@ void AsyncCallTask::done() {
     std::string callbackErrorMessage("");
     
     if (error == 0) {
-        v8::Local<Value> onDoneValue = callbackObject->GetRealNamedProperty(v8::String::NewFromUtf8(isolate,"onDone"));
+        v8::Local<Value> onDoneValue = callbackObject->GetRealNamedProperty(v8::Isolate::GetCurrent()->GetCurrentContext(),
+                v8::String::NewFromUtf8(isolate,"onDone")).ToLocalChecked();
 
         if (*onDoneValue != NULL && onDoneValue->IsFunction()) {
             try{
@@ -702,7 +710,8 @@ void AsyncCallTask::done() {
         }
     } 
     if(error!=0) {
-        v8::Local<Value> onErrorValue = callbackObject->GetRealNamedProperty(v8::String::NewFromUtf8(isolate,"onError"));
+        v8::Local<Value> onErrorValue = callbackObject->GetRealNamedProperty(v8::Isolate::GetCurrent()->GetCurrentContext(),
+                v8::String::NewFromUtf8(isolate,"onError")).ToLocalChecked();
 
         if (*onErrorValue != NULL && onErrorValue->IsFunction()) {
             v8::Local<v8::Function> onErrorFunction = v8::Local<Function>::Cast(onErrorValue);
