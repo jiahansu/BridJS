@@ -1,6 +1,6 @@
 {
     "name": "bridjs",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "description": "V8 bindings for dyncall, and BridJ-like API for nodejs.",
     "keywords": [
         "dyncall",
