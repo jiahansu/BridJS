@@ -17,7 +17,7 @@
         'src/test.cc',
       ],
       'include_dirs': [
-        'deps/dyncall-0.8/include',
+        'deps/dyncall-0.9/include',
         "<!(node -e \"require('nan')\")"
       ],
       "msbuild_settings": {
@@ -30,16 +30,16 @@
             'conditions': [
                       [ 'target_arch=="ia32"', {
                         'libraries': [
-                            '../deps/dyncall-0.8/win32_ia32/libdyncall_s.lib',
-                            '../deps/dyncall-0.8/win32_ia32/libdyncallback_s.lib',
-                            '../deps/dyncall-0.8/win32_ia32/libdynload_s.lib',
+                            '../deps/dyncall-0.9/win32_ia32/libdyncall_s.lib',
+                            '../deps/dyncall-0.9/win32_ia32/libdyncallback_s.lib',
+                            '../deps/dyncall-0.9/win32_ia32/libdynload_s.lib',
                         ]
                       } ],
                       [ 'target_arch=="x64"', {
                         'libraries': [
-                            '../deps/dyncall-0.8/win32_x64/libdyncall_s.lib',
-                            '../deps/dyncall-0.8/win32_x64/libdyncallback_s.lib',
-                            '../deps/dyncall-0.8/win32_x64/libdynload_s.lib',
+                            '../deps/dyncall-0.9/win32_x64/libdyncall_s.lib',
+                            '../deps/dyncall-0.9/win32_x64/libdyncallback_s.lib',
+                            '../deps/dyncall-0.9/win32_x64/libdynload_s.lib',
                         ]
                       } ],
             ]
@@ -48,29 +48,29 @@
             'conditions': [
                       [ 'target_arch=="ia32"', {
                         'libraries': [
-                            '../deps/dyncall-0.8/linux_ia32/libdyncall_s.a',
-                            '../deps/dyncall-0.8/linux_ia32/libdyncallback_s.a',
-                            '../deps/dyncall-0.8/linux_ia32/libdynload_s.a',
+                            '../deps/dyncall-0.9/linux_ia32/libdyncall_s.a',
+                            '../deps/dyncall-0.9/linux_ia32/libdyncallback_s.a',
+                            '../deps/dyncall-0.9/linux_ia32/libdynload_s.a',
                         ]
                       } ],
                       [ 'target_arch=="x64"', {
                         'libraries': [
-                            '../deps/dyncall-0.8/linux_x64/libdyncall_s.a',
-                            '../deps/dyncall-0.8/linux_x64/libdyncallback_s.a',
-                            '../deps/dyncall-0.8/linux_x64/libdynload_s.a',
+                            '../deps/dyncall-0.9/linux_x64/libdyncall_s.a',
+                            '../deps/dyncall-0.9/linux_x64/libdyncallback_s.a',
+                            '../deps/dyncall-0.9/linux_x64/libdynload_s.a',
                         ]
                       } ],
             ]
         }],
         ['OS=="mac"', {
                         'libraries': [
-                            '../deps/dyncall-0.8/darwin/libdyncall_s.a',
-                            '../deps/dyncall-0.8/darwin/libdyncallback_s.a',
-                            '../deps/dyncall-0.8/darwin/libdynload_s.a',
+                            '../deps/dyncall-0.9/darwin/libdyncall_s.a',
+                            '../deps/dyncall-0.9/darwin/libdyncallback_s.a',
+                            '../deps/dyncall-0.9/darwin/libdynload_s.a',
                         ],
                         'xcode_settings': {
                         'OTHER_CFLAGS': [
-                            "-std=c++11", "-stdlib=libc++", "-O3", "-fexceptions", "-fPIC", "-mmacosx-version-min=10.9"
+                            "-std=c++11", "-stdlib=libc++", "-O3", "-fexceptions", "-fPIC", "-mmacosx-version-min=10.7"
                       ]},                
       },]
       ],
