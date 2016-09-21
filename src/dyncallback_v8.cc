@@ -46,13 +46,15 @@ uv_mutex_t gValueWrapperMutex;
 uv_thread_t gDefaultThread;
 
 uv_mutex_t gCallbackTaskQueueMutex;
-uv_async_t gCallbackQueueAsync;
+uv_async_t* gpCallbackQueueAsync;
 std::vector<std::shared_ptr<bridjs::CallbackTask >> gCallbackTaskQueue;
+int64_t gNumCallbacks = 0;
 
 char callbackHandler(DCCallback* cb, DCArgs* args, DCValue* result, void* userdata);
+void closeAsyncCallback(uv_handle_t *handle);
 
 void NewCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
-void InitCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
+//void InitCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
 void FreeCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 
@@ -96,14 +98,13 @@ void bridjs::Dyncallback::Init(v8::Handle<v8::Object> exports) {
         throw std::runtime_error(message);
     }
 
-    memset(&gCallbackQueueAsync, 0, sizeof (uv_async_t));
-
-    uv_async_init(uv_default_loop(), &gCallbackQueueAsync, bridjs::CallbackTask::flushV8Callbacks);
-
+    gpCallbackQueueAsync = NULL;
+    
     NODE_SET_METHOD(exports, "newCallback", NewCallback);
-    NODE_SET_METHOD(exports, "initCallback", InitCallback);
+    //NODE_SET_METHOD(exports, "initCallback", InitCallback);
     NODE_SET_METHOD(exports, "freeCallback", FreeCallback);
-
+    NODE_SET_METHOD(exports, "deleteCallback", FreeCallback);
+    
     NODE_SET_METHOD(exports, "argBool", ArgBool);
     NODE_SET_METHOD(exports, "argChar", ArgChar);
     NODE_SET_METHOD(exports, "argShort", ArgShort);
@@ -130,7 +131,7 @@ void  NewCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
     CallbackWrapper* valueWrapper;
     DCCallback* pCallback;
     v8::Persistent<v8::Object> persistentObject(isolate,callbackObj);
-            
+          
     for (uint32_t i = 0; i < argumentArray->Length(); ++i) {
         GET_CHAR_VALUE(type, argumentArray->Get(i), i);
         argumentTypes.push_back(type);
@@ -147,13 +148,28 @@ void  NewCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
         gValueWrapperMap[pCallback] = valueWrapper;
         uv_mutex_unlock(&gValueWrapperMutex);
         args.GetReturnValue().Set(bridjs::Utils::wrapPointer(isolate,pCallback));
+        
+        if(gNumCallbacks==0){
+            gpCallbackQueueAsync = new uv_async_t;
+            memset(gpCallbackQueueAsync, 0, sizeof (uv_async_t));
+            uv_async_init(uv_default_loop(), gpCallbackQueueAsync, bridjs::CallbackTask::flushV8Callbacks);
+            //std::cout<<"Init gpCallbackQueueAsync: "<< gpCallbackQueueAsync<<std::endl;
+        }
+        ++gNumCallbacks;
+        
+        if(gNumCallbacks<=0){
+            std::stringstream message; 
+            message<< "Invalid number of callbacks: "<<gNumCallbacks;
+            std::cerr<<message.str()<<std::endl;
+            THROW_EXCEPTION(message.str().c_str());
+        }
     } else {
         delete valueWrapper;
         valueWrapper = NULL;
         THROW_EXCEPTION("Fail to new Callback object");
     }
 }
-
+/*
 void  InitCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     std::stringstream signature;
@@ -186,14 +202,14 @@ void  InitCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
         THROW_EXCEPTION("pCallback was NULL");
     }
 }
-
+*/
 void  FreeCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
     Isolate* isolate = Isolate::GetCurrent(); HandleScope scope(isolate);
     GET_POINTER_ARG(DCCallback, pCallback, args, 0);
 
     if (pCallback != NULL) {
         uv_mutex_lock(&gValueWrapperMutex);
-
+        
         std::map<DCCallback*, CallbackWrapper*>::iterator iterator = gValueWrapperMap.find(pCallback);
 
         if (iterator != gValueWrapperMap.end()) {
@@ -203,7 +219,30 @@ void  FreeCallback(const v8::FunctionCallbackInfo<v8::Value>& args) {
                 delete valueWrapper;
                 valueWrapper = NULL;
             }
+            gValueWrapperMap.erase(iterator);
         }
+        --gNumCallbacks;
+        if(gNumCallbacks==0){
+            if(gpCallbackQueueAsync!=NULL){
+                uv_close((uv_handle_t*)gpCallbackQueueAsync, closeAsyncCallback);
+                gpCallbackQueueAsync = NULL;
+            }else{
+                std::ostringstream message;
+
+                message << "gpCallbackQueueAsync was not initialized";
+		std::cerr << message.str() << std::endl;
+
+                throw std::runtime_error(message.str());
+            }
+        }
+        
+        if(gNumCallbacks<0){
+            std::stringstream message; 
+            message<< "Invalid number of callbacks: "<<gNumCallbacks;
+            std::cerr<<message.str()<<std::endl;
+            THROW_EXCEPTION(message.str().c_str());
+        }
+        
         uv_mutex_unlock(&gValueWrapperMutex);
 
         dcbFreeCallback(pCallback);
@@ -576,13 +615,11 @@ void bridjs::CallbackTask::flushV8Callbacks(uv_async_t *handle) {
 }
 
 void closeAsyncCallback(uv_handle_t *handle) {
-    CallbackTask *pCallTask = static_cast<CallbackTask*> (handle->data);
-
-    if (pCallTask != NULL) {
-        //std::cout<<pCallTask<<std::endl;
-        delete pCallTask;
-    } else {
-        std::cerr << "Fail to cast data pointer to CallbackTask" << std::endl;
+    //std::cout<<"Delete gpCallbackQueueAsync: "<<handle<<", remain callbacks "<<gNumCallbacks<<std::endl;
+    if(handle!=NULL){
+        delete handle;
+    }else{
+        std::cerr<<"Invalid handle: "<<handle<<std::endl;
     }
 }
 
@@ -622,26 +659,26 @@ char bridjs::CallbackWrapper::onCallback(DCCallback* cb, DCArgs* args, DCValue* 
             std::cerr << "Unknown error to call gCallbackTaskQueue.push_back()" << std::endl;
         }
         uv_mutex_unlock(&gCallbackTaskQueueMutex);
-
+        
         if (uv_thread_self() == gDefaultThread) {
             bridjs::CallbackTask::flushV8Callbacks(NULL);
             //invokeV8Callback(task->getAsync(),0);
         } else {
             //uv_queue_work(uv_default_loop(),req,NULL,(uv_after_work_cb)invokeV8Callback);
+            if(gpCallbackQueueAsync!=NULL){
+                uv_async_send(gpCallbackQueueAsync);
+            }else{
+                std::ostringstream message;
 
-            uv_async_send(&gCallbackQueueAsync);
+                message << "gpCallbackQueueAsync was not initialized";
+		std::cerr << message.str() << std::endl;
+
+                throw std::runtime_error(message.str());
+            }
             //std::cout<<"1111111111111"<<std::endl;	
             task->wait();
             //std::cout<<"2222222222222"<<std::endl;	
         }
-
-
-        //req->data = NULL;
-        //delete req;
-        /*Delete pTask object after close async object*/
-        //uv_close((uv_handle_t*) task->getAsync(),closeAsyncCallback);
-        //req = NULL;
-        //task = NULL;
     } catch (...) {
         std::cerr << "bridjs::CallbackWrapper::onCallback=>Unknown exception" << std::endl;
     }

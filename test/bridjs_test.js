@@ -33,10 +33,10 @@
 var assert = require('assert'), bridjs = require('../lib/bridjs.js'), log4js = require("log4js"),
         Utils = require("../lib/utils.js"), my = require('myclass'), Compiler = require("../lib/compiler");
 var log = log4js.getLogger("BridjsTest"), libPath;
-
+/*
 var interval = setInterval(function() {
     log.info("keep test alive");
-}, 999999999);
+}, 999999999);*/
 var lib;
 
 {/*Test dynload block*/
@@ -318,13 +318,16 @@ var lib;
             log.info("Union size: ", bridjs.sizeof(UnionValue));
             
             callback = bridjs.newCallback(bridjs.defineFunction("double (*abc)(const int16_t w, const int32_t x, const long y, const longlong z, const double e)"), function(w, x, y, z, e) {
+                log.info("Invoke callback one");
+                
                 return w * x * y * z * e;
             });
             TestStructCallbackFunction = bridjs.defineFunction("double TestStructCallbackFunction(const TestStruct* pTestStruct)", {TestStruct:TestStruct});
+            
             structCallback  = bridjs.newCallback(TestStructCallbackFunction , function(testStructArg) {
                 //log.info(testStructArg.e);
                 assert(testStructArg.e === testStruct.e ,"Fail to call testerInstance.testStructCallbackFunction");
-                
+                log.info("Invoke callback two");
                 return testStructArg.w * testStructArg.x * testStructArg.y * testStructArg.z * testStructArg.e;
             });
             
@@ -486,6 +489,14 @@ var lib;
             testerInstance.testFillStringFunction(strBuffer1, strBuffer1.length);
             
             log.info("testFillStringFunction: ",bridjs.toString(strBuffer1));
+            
+            setTimeout(function(){
+                bridjs.deleteCallback(callback);
+                bridjs.deleteCallback(structCallback);
+                structCallback = null;
+                callback = null;
+            },0);
+            
             
             /*
             assert(testString===testerInstance.testStringFunction(testString), 

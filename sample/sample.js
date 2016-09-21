@@ -102,15 +102,15 @@ var callbackFunctionDefine = bridjs.defineFunction("double (int16_t, int32_t, lo
 
 var callback = bridjs.newCallback(callbackFunctionDefine, function(w, x, y, z, e) {
         console.log("Callback function was invoked");
-    
+        
+        setTimeout(function(){
+           bridjs.deleteCallback(callback);
+           callback = null; 
+        },0);
+        //bridjs.deleteCallback(callback);
+        //callback = null;
+        
         return w*x*y*z*e;
-});
-
-var structCallback = bridjs.newCallback(TestStructCallbackFunction, function (testStructArg) {
-    //log.info(testStructArg.e);
-    assert(testStructArg.e === testStruct.e, "Fail to call testerInstance.testStructCallbackFunction");
-
-    return testStructArg.w * testStructArg.x * testStructArg.y * testStructArg.z * testStructArg.e;
 });
 
 var NativeModule = bridjs.defineModule({
@@ -160,3 +160,4 @@ var nativeDouble = new bridjs.NativeValue.double(2.5);
 var returnNativeDouble = nativeModule.testValuePassByPointerFunction(bridjs.byPointer(nativeDouble));
 
 console.log(nativeDouble.get());
+
