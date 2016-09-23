@@ -397,9 +397,9 @@
             <pElem>/usr/include/nodejs/src</pElem>
             <pElem>/usr/include/nodejs/deps/uv/include</pElem>
             <pElem>/usr/include/nodejs</pElem>
-            <pElem>../../../../../.node-gyp/6.2.0/include/node</pElem>
             <pElem>../../node_modules/nan</pElem>
             <pElem>../../deps/dyncall-0.9/include</pElem>
+            <pElem>../../../../../.node-gyp/6.6.0/include/node</pElem>
           </incDir>
           <warningLevel>2</warningLevel>
         </ccTool>

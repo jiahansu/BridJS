@@ -70,7 +70,7 @@
                         ],
                         'xcode_settings': {
                         'OTHER_CFLAGS': [
-                            "-std=c++11", "-stdlib=libc++", "-O3", "-fexceptions", "-fPIC", "-mmacosx-version-min=10.7"
+                            "-std=c++11", "-stdlib=libc++", "-O3", "-fexceptions", "-fPIC", "-mmacosx-version-min=10.9"
                       ]},                
       },]
       ],
