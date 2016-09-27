@@ -137,14 +137,14 @@ namespace bridjs {
         v8::Isolate *mpIsolate;
         DCCallVM* mpVM;
         const NativeFunction* mpNativeFunction;
-        std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> mpPersistArgs;
+        std::shared_ptr<v8::StdGlobalValueMap<uint32_t,v8::Value>> mpPersistArgs;
         std::shared_ptr<std::vector<std::shared_ptr<std::string>>> mpStringArgs;
         v8::Persistent<v8::Object> mpCallbackObject;
         std::shared_ptr<void> mpData;
     public:
         AsyncCallTask(v8::Isolate *pIsolate, DCCallVM* mpVM, 
                 const NativeFunction* mpNativeFunction,
-                std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> pPersistArgs, 
+                std::shared_ptr<v8::StdGlobalValueMap<uint32_t,v8::Value>> pPersistArgs, 
                 std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs,
                 v8::Persistent<v8::Object>& pCallbackObject);
         void execute();

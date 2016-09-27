@@ -75,7 +75,7 @@ public:
 protected:
 	static v8::Persistent<v8::Function> constructor;
 	std::vector<char> mFieldTypes;
-	v8::StdPersistentValueMap<uint32_t,v8::Object> mSubStructMap;
+	v8::StdGlobalValueMap<uint32_t,v8::Object> mSubStructMap;
 	std::vector<size_t> mOffsets;
 	size_t mSize;
 	size_t mAligment;

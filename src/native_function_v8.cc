@@ -111,7 +111,7 @@ ObjectCollection::~ObjectCollection() {
 
 void pushArgs(v8::Isolate* isolate,DCCallVM *vm, const bridjs::NativeFunction *nativeFunction,
         const ValueCollection* args, const uint32_t offset,
-        std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> pPersistArgs, 
+        std::shared_ptr<v8::StdGlobalValueMap<uint32_t,v8::Value>> pPersistArgs, 
         std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs,
         v8::Local<Value>& returnValue) {
     
@@ -490,8 +490,8 @@ NAN_METHOD(bridjs::NativeFunction::Call) {
         try {
             dcReset(vm);
             bool hasArgParameter = false;
-            std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> pPersistArgs = 
-                    std::make_shared<v8::StdPersistentValueMap<uint32_t,v8::Value>>(isolate);
+            std::shared_ptr<v8::StdGlobalValueMap<uint32_t,v8::Value>> pPersistArgs = 
+                    std::make_shared<v8::StdGlobalValueMap<uint32_t,v8::Value>>(isolate);
             std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs 
                     = std::make_shared<std::vector<std::shared_ptr<std::string>>>();
             if (/*args[1]->IsArray()*/info[1]->IsObject()) {
@@ -553,8 +553,8 @@ NAN_METHOD(bridjs::NativeFunction::CallAsync) {
         DCCallVM *vm = dcNewCallVM(stackSize);
 
         try {
-            std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> pPersistArgs = 
-                    std::make_shared<v8::StdPersistentValueMap<uint32_t,v8::Value>>(isolate);
+            std::shared_ptr<v8::StdGlobalValueMap<uint32_t,v8::Value>> pPersistArgs = 
+                    std::make_shared<v8::StdGlobalValueMap<uint32_t,v8::Value>>(isolate);
             std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs 
                     = std::make_shared<std::vector<std::shared_ptr<std::string>>>();
             
@@ -662,7 +662,7 @@ bridjs::NativeFunction::~NativeFunction() {
 }
 
 AsyncCallTask::AsyncCallTask(v8::Isolate* pIsolate,DCCallVM* pVM, 
-        const NativeFunction* pNativeFunction, std::shared_ptr<v8::StdPersistentValueMap<uint32_t,v8::Value>> pPersistArgs,
+        const NativeFunction* pNativeFunction, std::shared_ptr<v8::StdGlobalValueMap<uint32_t,v8::Value>> pPersistArgs,
         std::shared_ptr<std::vector<std::shared_ptr<std::string>>> pStringArgs,
         v8::Persistent<v8::Object>& pCallbackObject):mpIsolate(pIsolate),mpVM(pVM),
         mpNativeFunction(pNativeFunction),mpPersistArgs(pPersistArgs),mpStringArgs(pStringArgs), mpCallbackObject(pIsolate, pCallbackObject)   {
