@@ -78,57 +78,57 @@ ${CND_DISTDIR}/../../../build/Release/bridjs.node: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/../../../build/Release
 	${LINK.cc} -o ${CND_DISTDIR}/../../../build/Release/bridjs.node ${OBJECTFILES} ${LDLIBSOPTIONS} -undefined dynamic_lookup -dynamiclib -install_name bridjs.node -fPIC
 
-${OBJECTDIR}/_ext/56252444/array_struct_v8.o: ../../src/array_struct_v8.cc 
+${OBJECTDIR}/_ext/56252444/array_struct_v8.o: ../../src/array_struct_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/array_struct_v8.o ../../src/array_struct_v8.cc
 
-${OBJECTDIR}/_ext/56252444/bridjs_module.o: ../../src/bridjs_module.cc 
+${OBJECTDIR}/_ext/56252444/bridjs_module.o: ../../src/bridjs_module.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/bridjs_module.o ../../src/bridjs_module.cc
 
-${OBJECTDIR}/_ext/56252444/dyncall_v8.o: ../../src/dyncall_v8.cc 
+${OBJECTDIR}/_ext/56252444/dyncall_v8.o: ../../src/dyncall_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/dyncall_v8.o ../../src/dyncall_v8.cc
 
-${OBJECTDIR}/_ext/56252444/dyncall_v8_utils.o: ../../src/dyncall_v8_utils.cc 
+${OBJECTDIR}/_ext/56252444/dyncall_v8_utils.o: ../../src/dyncall_v8_utils.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/dyncall_v8_utils.o ../../src/dyncall_v8_utils.cc
 
-${OBJECTDIR}/_ext/56252444/dyncallback_v8.o: ../../src/dyncallback_v8.cc 
+${OBJECTDIR}/_ext/56252444/dyncallback_v8.o: ../../src/dyncallback_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/dyncallback_v8.o ../../src/dyncallback_v8.cc
 
-${OBJECTDIR}/_ext/56252444/dynload_v8.o: ../../src/dynload_v8.cc 
+${OBJECTDIR}/_ext/56252444/dynload_v8.o: ../../src/dynload_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/dynload_v8.o ../../src/dynload_v8.cc
 
-${OBJECTDIR}/_ext/56252444/native_function_v8.o: ../../src/native_function_v8.cc 
+${OBJECTDIR}/_ext/56252444/native_function_v8.o: ../../src/native_function_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/native_function_v8.o ../../src/native_function_v8.cc
 
-${OBJECTDIR}/_ext/56252444/pointer_v8.o: ../../src/pointer_v8.cc 
+${OBJECTDIR}/_ext/56252444/pointer_v8.o: ../../src/pointer_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pointer_v8.o ../../src/pointer_v8.cc
 
-${OBJECTDIR}/_ext/56252444/struct_v8.o: ../../src/struct_v8.cc 
+${OBJECTDIR}/_ext/56252444/struct_v8.o: ../../src/struct_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/struct_v8.o ../../src/struct_v8.cc
 
-${OBJECTDIR}/_ext/56252444/test.o: ../../src/test.cc 
+${OBJECTDIR}/_ext/56252444/test.o: ../../src/test.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/test.o ../../src/test.cc
 
-${OBJECTDIR}/_ext/56252444/union_struct_v8.o: ../../src/union_struct_v8.cc 
+${OBJECTDIR}/_ext/56252444/union_struct_v8.o: ../../src/union_struct_v8.cc
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Wall -I/usr/include/nodejs/deps/v8/include -I/usr/include/nodejs/src -I/usr/include/nodejs/deps/uv/include -I/usr/include/nodejs -I../../node_modules/nan -I../../deps/dyncall-0.9/include -I../../../../../.node-gyp/6.6.0/include/node -std=c++11 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/union_struct_v8.o ../../src/union_struct_v8.cc
@@ -139,7 +139,6 @@ ${OBJECTDIR}/_ext/56252444/union_struct_v8.o: ../../src/union_struct_v8.cc
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/../../../build/Release/bridjs.node
 
 # Subprojects
 .clean-subprojects:
