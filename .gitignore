@@ -4,6 +4,7 @@ win32_x64
 win32_ia32
 lib/bridjs/win32_x64
 node_modules
+package-lock.json
 dyncall
 build
 *~

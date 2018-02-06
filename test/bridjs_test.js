@@ -33,6 +33,8 @@
 var assert = require('assert'), bridjs = require('../lib/bridjs.js'), log4js = require("log4js"),
         Utils = require("../lib/utils.js"), my = require('myclass'), Compiler = require("../lib/compiler");
 var log = log4js.getLogger("BridjsTest"), libPath;
+
+log.level = "info";
 /*
 var interval = setInterval(function() {
     log.info("keep test alive");
