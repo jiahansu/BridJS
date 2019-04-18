@@ -2,7 +2,7 @@ BridJS
 ======
 BridJS is a [BridJ](http://bridj.googlecode.com)-like API for runtime binding C function and struct without writing any extra native code.
 
-###Key features
+### Key features
 * BridJS binds native function at runtime, you never need to compile any extra native code 
 * Uncompromised speed and power by [dyncall](http://www.dyncall.org/)
 * Support implicit type wrapping/unwrapping (struct<->pointer and string<->number etc... )
@@ -10,16 +10,16 @@ BridJS is a [BridJ](http://bridj.googlecode.com)-like API for runtime binding C 
 * Execute any native function either by synchronous or by asynchronous way
 * Whatever the native callbacks are invoked by any other thread, BridJS always forward callback to V8's default thread 
 
-###Limitation
+### Limitation
 Like [BridJ](http://bridj.googlecode.com), BridJS also has some limitations:
 * Pass structs by value not supported yet (neither as function arguments nor as function return values)
 * BridJS does **not support** C++, COM, Objective-C...
 
-###Requirement
+### Requirement
 * [nodejs](http://nodejs.org/) v0.10.8 or higher
 * Windows x64, Linux x86/x64 & Mac OSX
 
-###Installation
+### Installation
 If node.js version is higher or equal than v0.12.0:
 ``` bash
 npm install bridjs
@@ -29,8 +29,8 @@ If node.js version is lower or equal than v0.10.38:
 npm install bridjs@0.1.9-3
 ```
 
-###Tutorial
-####1. C function
+### Tutorial
+#### 1. C function
 -------------
 If C code is something like this:
 ``` bash
@@ -58,7 +58,7 @@ bridjs.defineModule({
   ...
 },libraryFile);
 ``` 
-####2. C struct
+#### 2. C struct
 ---------------
 If C code is something like this:
 ``` bash
@@ -113,7 +113,7 @@ bridjs.defineStruct({
     ...
 });
 ``` 
-####3. Invoke native function asynchronously
+#### 3. Invoke native function asynchronously
 --------------------------------------------
 ``` bash
 /*You can execute any native function asynchronously (not in default thread), and get return value from callback*/
@@ -125,7 +125,7 @@ Async execute native function API
 ``` bash
 bridjs.async(moduleInstance).function(param1, param2,....callbackFunction);
 ```
-####4. C function pointer
+#### 4. C function pointer
 -------------------------
 If C code is something like this:
 ``` bash
@@ -154,7 +154,7 @@ Create function pointer API
 ``` bash
 bridjs.newCallback(functionSignature,callbackFunction);
 ```
-####5. Pass primitive type by pointer
+#### 5. Pass primitive type by pointer
 -------------------------------------
 If C code is something like this:
 ``` bash
@@ -175,6 +175,6 @@ var returnNativeDouble = nativeModule.testValuePassByPointerFunction(bridjs.byPo
 var result = returnNativeDouble.get();
 ```
 
-###License
+### License
 
 BSD License. See the `LICENSE` file.
